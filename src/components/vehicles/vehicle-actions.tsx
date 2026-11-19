@@ -109,7 +109,7 @@ export function VehicleActions({ vehicle }: VehicleActionsProps) {
         </>
       )}
 
-      {status === 'SUSPENDED' && (
+      {status === 'UNAVAILABLE' && (
         <>
           <Button variant="default" onClick={() => setReinstateOpen(true)} disabled={approveMutation.isPending}>
             <RefreshCw className="size-4" />

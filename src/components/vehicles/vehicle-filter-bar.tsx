@@ -15,10 +15,10 @@ import type { VehicleCategory } from '@/types/vehicle';
 
 const STATUSES: Array<{ value: VehicleStatus | 'ALL'; label: string }> = [
   { value: 'ALL', label: 'All statuses' },
-  { value: 'PENDING', label: 'Pending' },
+  { value: 'PENDING_REVIEW', label: 'Pending review' },
   { value: 'APPROVED', label: 'Approved' },
   { value: 'REJECTED', label: 'Rejected' },
-  { value: 'SUSPENDED', label: 'Suspended' },
+  { value: 'UNAVAILABLE', label: 'Unavailable' },
 ];
 
 const CATEGORIES: Array<{ value: VehicleCategory | 'ALL'; label: string }> = [
