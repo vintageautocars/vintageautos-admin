@@ -15,7 +15,12 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      window.location.href = '/login';
+      const requestUrl: string = error.config?.url ?? '';
+      const isAuthProbe = requestUrl.startsWith('/auth/');
+      const alreadyOnLogin = window.location.pathname === '/login';
+      if (!isAuthProbe && !alreadyOnLogin) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   },
