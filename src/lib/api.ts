@@ -16,7 +16,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       const requestUrl: string = error.config?.url ?? '';
-      const isAuthProbe = requestUrl.startsWith('/auth/');
+      const isAuthProbe = /\/auth\//.test(requestUrl);
       const alreadyOnLogin = window.location.pathname === '/login';
       if (!isAuthProbe && !alreadyOnLogin) {
         window.location.href = '/login';
