@@ -1,0 +1,104 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Required GitHub repository SECRETS:
+#
+#   VPS_HOST        — VPS IP address or hostname
+#   VPS_USER        — SSH login user (e.g. root or ubuntu)
+#   VPS_SSH_KEY     — Private SSH key with access to the VPS
+#   GHCR_TOKEN      — GitHub PAT with read:packages scope (for VPS to pull images)
+#
+# Required GitHub repository VARIABLES:
+#
+#   VITE_API_URL    — Production backend URL (e.g. https://api.vintagecarsoflagos.com)
+#
+# One-time VPS setup:
+#   1. mkdir -p /opt/apps/admin
+#   2. Copy docker-compose.prod.yml → /opt/apps/admin/docker-compose.prod.yml
+#      (replace GITHUB_OWNER with your GitHub username)
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Deploy Admin
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**"
+      - "!**.md"
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/vintagecars-admin
+
+jobs:
+  # ── 1. Build the Docker image and push it to GHCR ──────────────────────────
+  build-and-push:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_API_URL=${{ vars.VITE_API_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ── 2. SSH into VPS, pull the new image, restart the container ─────────────
+  deploy:
+    name: Deploy to VPS
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull and restart
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_TOKEN,GHCR_USER,IMAGE
+          script: |
+            set -e
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            docker pull "$IMAGE"
+            cd /opt/apps/admin
+            IMAGE="$IMAGE" docker compose -f docker-compose.prod.yml up -d --no-deps --pull never admin
+            docker image prune -f
+            echo "✓ Deployed $IMAGE"
+        env:
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          IMAGE: ${{ needs.build-and-push.outputs.image }}

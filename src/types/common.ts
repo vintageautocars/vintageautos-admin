@@ -1,0 +1,11 @@
+export interface Paginated<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'OWNER' | 'CUSTOMER';
+export type VehicleStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
+export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+export type OwnerStatus = 'PENDING' | 'APPROVED' | 'REJECTED';

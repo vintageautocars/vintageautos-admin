@@ -1,0 +1,15 @@
+# VPS deployment file — place at /opt/apps/admin/docker-compose.prod.yml
+
+services:
+  admin:
+    image: ${IMAGE:-ghcr.io/GITHUB_OWNER/vintagecars-admin:latest}
+    container_name: vintagecars-admin
+    restart: unless-stopped
+    ports:
+      - "3002:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
