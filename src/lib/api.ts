@@ -16,10 +16,12 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       const requestUrl: string = error.config?.url ?? '';
+      // Auth probes (login, logout, /auth/me, profile, password) are handled
+      // by the caller — AuthProvider or the settings page. Everything else:
+      // tell AuthProvider the session died, and let it navigate via React Router.
       const isAuthProbe = /\/auth\//.test(requestUrl);
-      const alreadyOnLogin = window.location.pathname === '/login';
-      if (!isAuthProbe && !alreadyOnLogin) {
-        window.location.href = '/login';
+      if (!isAuthProbe) {
+        window.dispatchEvent(new Event('auth:logout'));
       }
     }
     return Promise.reject(error);
