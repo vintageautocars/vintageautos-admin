@@ -1,13 +1,6 @@
 import type { VehicleStatus } from './common';
 
 export type TransmissionType = 'AUTOMATIC' | 'MANUAL';
-export type VehicleCategory =
-  | 'CLASSIC_VINTAGE'
-  | 'VINTAGE_MERCEDES'
-  | 'CLASSIC_CONVERTIBLE'
-  | 'CLASSIC_SUV'
-  | 'VINTAGE_SPORTS'
-  | 'OTHER_COLLECTIBLE';
 
 export interface VehiclePhoto {
   id: string;
@@ -30,7 +23,7 @@ export interface Vehicle {
   make: string;
   model: string;
   year: number;
-  category: VehicleCategory;
+  category: string;
   description: string;
   transmission: TransmissionType;
   dailyRate: number;

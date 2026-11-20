@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
-import { Car, Loader2, Lock } from 'lucide-react';
+import { Car, Loader2, Lock, Plus } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
+import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/shared/data-table';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { Switch } from '@/components/ui/switch';
@@ -240,9 +241,15 @@ export default function VehiclesListPage() {
       <PageHeader
         title="Vehicles"
         action={
-          pendingCount != null && pendingCount > 0 ? (
-            <Badge variant="secondary">{pendingCount} pending</Badge>
-          ) : undefined
+          <div className="flex items-center gap-2">
+            {pendingCount != null && pendingCount > 0 && (
+              <Badge variant="secondary">{pendingCount} pending</Badge>
+            )}
+            <Button size="sm" onClick={() => navigate('/vehicles/add')}>
+              <Plus className="size-4 mr-1.5" />
+              Add Vehicle
+            </Button>
+          </div>
         }
       />
 

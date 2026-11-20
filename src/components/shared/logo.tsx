@@ -10,7 +10,7 @@ export function Logo({ className, compact }: LogoProps) {
     return (
       <span className={cn('font-semibold text-sm text-foreground', className)}>
         <span className="text-primary">Vintage Cars</span>
-        <span className="text-foreground"> of Lagos</span>
+        <span className="text-foreground"> of Nigeria</span>
       </span>
     );
   }
@@ -18,7 +18,7 @@ export function Logo({ className, compact }: LogoProps) {
     <div className={cn('flex flex-col', className)}>
       <span className="font-semibold text-base leading-tight">
         <span className="text-primary">Vintage Cars</span>
-        <span className="text-foreground"> of Lagos</span>
+        <span className="text-foreground"> of Nigeria</span>
       </span>
       <span className="text-xs font-medium tracking-widest uppercase text-[var(--color-gray-text)] mt-0.5">
         Admin

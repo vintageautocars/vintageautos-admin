@@ -10,6 +10,7 @@ import {
   Settings2,
   ScrollText,
   Landmark,
+  Tag,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePendingCounts } from '@/hooks/use-pending-counts';
@@ -34,8 +35,9 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/owners',         label: 'Owner Applications', icon: Users,          badgeKey: 'owners' },
   { to: '/owners/bank-requests', label: 'Bank Detail Requests', icon: Landmark, badgeKey: 'bankRequests' },
   { to: '/settings',       label: 'Settings',           icon: Settings },
-  { to: '/settings/payment', label: 'Payment Settings', icon: Settings2 },
-  { to: '/audit-log',      label: 'Audit Log',          icon: ScrollText },
+  { to: '/settings/payment',     label: 'Payment Settings',  icon: Settings2 },
+  { to: '/settings/categories',  label: 'Categories',        icon: Tag },
+  { to: '/audit-log',            label: 'Audit Log',         icon: ScrollText },
 ];
 
 function NavBadge({ count }: { count: number }) {

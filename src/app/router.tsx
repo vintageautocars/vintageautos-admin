@@ -54,6 +54,13 @@ export const router = createBrowserRouter([
             },
           },
           {
+            path: 'vehicles/add',
+            lazy: async () => {
+              const { default: Component } = await import('../pages/vehicles/add');
+              return { Component };
+            },
+          },
+          {
             path: 'vehicles/:id',
             lazy: async () => {
               const { default: Component } = await import('../pages/vehicles/detail');
@@ -113,6 +120,13 @@ export const router = createBrowserRouter([
             path: 'settings/payment',
             lazy: async () => {
               const { default: Component } = await import('../pages/settings/payment');
+              return { Component };
+            },
+          },
+          {
+            path: 'settings/categories',
+            lazy: async () => {
+              const { default: Component } = await import('../pages/settings/categories');
               return { Component };
             },
           },

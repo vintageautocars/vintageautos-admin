@@ -9,9 +9,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { NIGERIAN_STATES } from '@/lib/nigerian-states';
-import { CATEGORY_LABELS } from '@/lib/vehicle-utils';
+import { useCategories } from '@/hooks/use-categories';
 import type { VehicleStatus } from '@/types/common';
-import type { VehicleCategory } from '@/types/vehicle';
 
 const STATUSES: Array<{ value: VehicleStatus | 'ALL'; label: string }> = [
   { value: 'ALL',           label: 'All statuses' },
@@ -19,14 +18,6 @@ const STATUSES: Array<{ value: VehicleStatus | 'ALL'; label: string }> = [
   { value: 'APPROVED',      label: 'Approved' },
   { value: 'REJECTED',      label: 'Rejected' },
   { value: 'UNAVAILABLE',   label: 'Unavailable' },
-];
-
-const CATEGORIES: Array<{ value: VehicleCategory | 'ALL'; label: string }> = [
-  { value: 'ALL', label: 'All categories' },
-  ...Object.entries(CATEGORY_LABELS).map(([value, label]) => ({
-    value: value as VehicleCategory,
-    label,
-  })),
 ];
 
 interface VehicleFilterBarProps {
@@ -58,6 +49,9 @@ export function VehicleFilterBar({
   onAvailableChange,
   onSearchChange,
 }: VehicleFilterBarProps) {
+  const { data: categoriesData } = useCategories();
+  const categories = categoriesData ?? [];
+
   return (
     <div className="flex flex-wrap items-end gap-3">
       <div className="relative min-w-[200px] flex-1">
@@ -102,9 +96,10 @@ export function VehicleFilterBar({
           <SelectValue placeholder="All categories" />
         </SelectTrigger>
         <SelectContent>
-          {CATEGORIES.map((c) => (
-            <SelectItem key={c.value} value={c.value}>
-              {c.label}
+          <SelectItem value="ALL">All categories</SelectItem>
+          {categories.map((c) => (
+            <SelectItem key={c.id} value={c.name}>
+              {c.name}
             </SelectItem>
           ))}
         </SelectContent>

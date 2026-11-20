@@ -68,7 +68,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
       </div>
 
-      <Button type="submit" className="mt-2 w-full" disabled={isLoading} size="lg">
+      <Button type="submit" className="mt-2 w-full h-11" disabled={isLoading} size="lg">
         {isLoading && <Loader2 className="size-4 animate-spin" />}
         Sign in
       </Button>

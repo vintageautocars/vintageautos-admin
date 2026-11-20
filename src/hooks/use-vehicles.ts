@@ -92,6 +92,16 @@ export function useToggleAvailability() {
   });
 }
 
+export function useAdminCreateVehicle() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Record<string, unknown>) =>
+      api.post<Vehicle>('/vehicles/admin', data).then((r) => r.data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: vehicleKeys.all }),
+    onError: () => toast.error('Failed to create vehicle.'),
+  });
+}
+
 export function useFetchDocumentUrl() {
   return useMutation({
     mutationFn: ({ vehicleId, docId }: { vehicleId: string; docId: string }) =>
