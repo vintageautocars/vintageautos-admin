@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { BookingActions } from '@/components/bookings/booking-actions';
@@ -119,6 +119,19 @@ export default function BookingDetailPage() {
                     </DetailRow>
                     <DetailRow label="Created">{formatDate(booking.createdAt)}</DetailRow>
                     <DetailRow label="Last Updated">{formatDate(booking.updatedAt)}</DetailRow>
+                    <DetailRow label="Owner Payout">
+                      {booking.ownerPaidAt ? (
+                        <span className="inline-flex items-center gap-1 text-teal-700">
+                          <CheckCircle2 className="size-3.5" />
+                          Paid on {formatDate(booking.ownerPaidAt)}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">Not yet recorded</span>
+                      )}
+                    </DetailRow>
+                    {booking.ownerPaymentNotes && (
+                      <DetailRow label="Payout Notes">{booking.ownerPaymentNotes}</DetailRow>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -130,7 +143,12 @@ export default function BookingDetailPage() {
                 <CardTitle>Booking Actions</CardTitle>
               </CardHeader>
               <CardContent>
-                <BookingActions bookingId={booking.id} status={booking.status} />
+                <BookingActions
+                  bookingId={booking.id}
+                  status={booking.status}
+                  paymentStatus={booking.payment?.status}
+                  ownerPaidAt={booking.ownerPaidAt}
+                />
               </CardContent>
             </Card>
           </div>

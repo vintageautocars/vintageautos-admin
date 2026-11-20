@@ -73,6 +73,7 @@ export default function VehicleDetailPage() {
 
           {/* Tabs */}
           <Tabs defaultValue="overview">
+            <div className="overflow-x-auto">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="negotiation">
@@ -88,6 +89,7 @@ export default function VehicleDetailPage() {
                 Documents{vehicle.documents && vehicle.documents.length > 0 ? ` (${vehicle.documents.length})` : ''}
               </TabsTrigger>
             </TabsList>
+            </div>
 
             <TabsContent value="overview" className="mt-4">
               <Card>

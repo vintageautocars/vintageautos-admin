@@ -162,11 +162,11 @@ export default function VehiclesListPage() {
     search: search || undefined,
   });
 
-  const rows = Array.isArray(data) ? data : (data?.items ?? []);
+  const rows = Array.isArray(data) ? data : ((data as { data?: Vehicle[] })?.data ?? []);
   const total = Array.isArray(data) ? rows.length : (data?.total ?? 0);
 
   // Count pending vehicles for the header badge
-  const pendingCount = status === 'PENDING' ? total : undefined;
+  const pendingCount = status === 'PENDING_REVIEW' ? total : undefined;
 
   function handleToggleFeatured(row: Vehicle) {
     setPendingFeature((prev) => new Set(prev).add(row.id));

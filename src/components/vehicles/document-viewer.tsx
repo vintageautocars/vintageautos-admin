@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { FileText, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/shared/empty-state';
-import { useFetchDocumentUrl } from '@/hooks/use-vehicles';
 import { formatDate } from '@/lib/utils';
+import api from '@/lib/api';
 import type { VehicleDocument } from '@/types/vehicle';
 
 interface DocumentRowProps {
@@ -11,18 +13,28 @@ interface DocumentRowProps {
 }
 
 function DocumentRow({ vehicleId, doc }: DocumentRowProps) {
-  const fetchUrl = useFetchDocumentUrl();
-  const isLoading = fetchUrl.isPending;
+  const [loading, setLoading] = useState(false);
 
-  function handleView() {
-    fetchUrl.mutate(
-      { vehicleId, docId: doc.id },
-      {
-        onSuccess: (url) => {
-          window.open(url, '_blank', 'noopener,noreferrer');
-        },
-      },
-    );
+  async function handleView() {
+    setLoading(true);
+    // Open the tab immediately while still in the user-gesture context.
+    // noopener makes Chrome return null, so omit it here — the Cloudinary
+    // page has no way back to us anyway once we navigate it.
+    const tab = window.open('', '_blank');
+    try {
+      const res = await api.get<{ url: string }>(
+        `/vehicles/admin/${vehicleId}/documents/${doc.id}/url`,
+      );
+      const signedUrl = res.data.url;
+      if (tab) {
+        tab.location.href = signedUrl;
+      }
+    } catch {
+      tab?.close();
+      toast.error('Could not open document.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -30,18 +42,18 @@ function DocumentRow({ vehicleId, doc }: DocumentRowProps) {
       <div className="flex items-center gap-3 overflow-hidden">
         <FileText className="size-5 shrink-0 text-muted-foreground" />
         <div className="flex flex-col overflow-hidden">
-          <span className="truncate text-sm font-medium text-foreground">{doc.filename}</span>
-          <span className="text-xs text-muted-foreground">{formatDate(doc.uploadedAt)}</span>
+          <span className="truncate text-sm font-medium text-foreground">{doc.name}</span>
+          <span className="text-xs text-muted-foreground">{formatDate(doc.createdAt)}</span>
         </div>
       </div>
       <Button
         variant="outline"
         size="sm"
-        disabled={isLoading}
+        disabled={loading}
         onClick={handleView}
         className="shrink-0"
       >
-        {isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
+        {loading ? <Loader2 className="size-4 animate-spin" /> : null}
         View
       </Button>
     </div>

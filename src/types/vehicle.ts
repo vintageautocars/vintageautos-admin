@@ -19,8 +19,8 @@ export interface VehiclePhoto {
 export interface VehicleDocument {
   id: string;
   type: string;
-  filename: string;
-  uploadedAt: string;
+  name: string;
+  createdAt: string;
 }
 
 export interface Vehicle {

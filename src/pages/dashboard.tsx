@@ -8,12 +8,15 @@ import { StatCard } from '@/components/shared/stat-card';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { RecentBookingsTable } from '@/components/dashboard/recent-bookings-table';
 import { useAdminStats } from '@/hooks/use-admin-stats';
+import { useAwaitingVerification } from '@/hooks/use-payments';
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.04 } } };
 const item = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } };
 
 export default function DashboardPage() {
   const { data: stats, isLoading } = useAdminStats();
+  const { data: awaitingPayments } = useAwaitingVerification();
+  const awaitingCount = Array.isArray(awaitingPayments) ? awaitingPayments.length : 0;
   const navigate = useNavigate();
 
   return (
@@ -34,7 +37,7 @@ export default function DashboardPage() {
           <StatCard label="Total vehicles" value={stats?.vehicles.total ?? '—'} hint={`${stats?.vehicles.pending ?? 0} pending review`} icon={Car} href="/vehicles" isLoading={isLoading} />
         </motion.div>
         <motion.div variants={item}>
-          <StatCard label="Pending vehicles" value={stats?.vehicles.pending ?? '—'} hint="Awaiting approval" icon={Clock} accent="yellow" href="/vehicles?status=PENDING" isLoading={isLoading} />
+          <StatCard label="Pending vehicles" value={stats?.vehicles.pending ?? '—'} hint="Awaiting approval" icon={Clock} accent="yellow" href="/vehicles?status=PENDING_REVIEW" isLoading={isLoading} />
         </motion.div>
         <motion.div variants={item}>
           <StatCard label="Approved vehicles" value={stats?.vehicles.approved ?? '—'} hint="Live on platform" icon={CheckCircle2} accent="default" href="/vehicles?status=APPROVED" isLoading={isLoading} />
@@ -80,7 +83,7 @@ export default function DashboardPage() {
             <CardHeader className="flex-row items-center justify-between space-y-0">
               <CardTitle className="text-base font-semibold text-foreground">Pending vehicles</CardTitle>
               <Button variant="ghost" size="sm" asChild className="text-[var(--color-gray-text)] hover:text-foreground">
-                <Link to="/vehicles?status=PENDING">View all <ArrowRight className="size-3.5 ml-1" /></Link>
+                <Link to="/vehicles?status=PENDING_REVIEW">View all <ArrowRight className="size-3.5 ml-1" /></Link>
               </Button>
             </CardHeader>
             <CardContent className="flex flex-col gap-2 pt-0">
@@ -89,14 +92,14 @@ export default function DashboardPage() {
               )}
               {(stats?.vehicles.pending ?? 0) > 0 && (
                 <button
-                  onClick={() => navigate('/vehicles?status=PENDING')}
+                  onClick={() => navigate('/vehicles?status=PENDING_REVIEW')}
                   className="flex items-center justify-between gap-3 p-3 rounded-md bg-white/5 hover:bg-white/10 transition text-left w-full"
                 >
                   <div>
                     <p className="text-sm font-medium text-foreground">{stats?.vehicles.pending} vehicle{stats?.vehicles.pending !== 1 ? 's' : ''}</p>
                     <p className="text-xs text-[var(--color-gray-text)]">Awaiting your approval</p>
                   </div>
-                  <StatusBadge status="PENDING" />
+                  <StatusBadge status="PENDING_REVIEW" />
                 </button>
               )}
             </CardContent>
@@ -128,6 +131,32 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Awaiting verification payments — only shown when count > 0 (auto-hides in automatic mode) */}
+          {awaitingCount > 0 && (
+            <Card className="bg-[var(--color-card-background)] border-[#FFFFFF1A]">
+              <CardHeader className="flex-row items-center justify-between space-y-0">
+                <CardTitle className="text-base font-semibold text-foreground">Awaiting verification</CardTitle>
+                <Button variant="ghost" size="sm" asChild className="text-[var(--color-gray-text)] hover:text-foreground">
+                  <Link to="/payments?tab=awaiting">View all <ArrowRight className="size-3.5 ml-1" /></Link>
+                </Button>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2 pt-0">
+                <button
+                  onClick={() => navigate('/payments?tab=awaiting')}
+                  className="flex items-center justify-between gap-3 p-3 rounded-md bg-white/5 hover:bg-white/10 transition text-left w-full"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {awaitingCount} receipt{awaitingCount !== 1 ? 's' : ''}
+                    </p>
+                    <p className="text-xs text-[var(--color-gray-text)]">Manual payments pending review</p>
+                  </div>
+                  <StatusBadge status="AWAITING_VERIFICATION" />
+                </button>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

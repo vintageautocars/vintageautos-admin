@@ -34,3 +34,26 @@ export const negotiationKeys = {
   all: ['negotiations'] as const,
   byVehicle: (vehicleId: string) => [...negotiationKeys.all, 'vehicle', vehicleId] as const,
 };
+
+export const paymentKeys = {
+  all: ['payments'] as const,
+  list: (filters: Record<string, unknown>) => [...paymentKeys.all, 'list', filters] as const,
+  detail: (id: string) => [...paymentKeys.all, 'detail', id] as const,
+  awaitingVerification: () => [...paymentKeys.all, 'awaiting-verification'] as const,
+};
+
+export const paymentSettingsKeys = {
+  all: ['payment-settings'] as const,
+  detail: () => [...paymentSettingsKeys.all, 'detail'] as const,
+};
+
+export const auditLogKeys = {
+  all: ['audit-log'] as const,
+  list: (filters: Record<string, unknown>) => [...auditLogKeys.all, 'list', filters] as const,
+  detail: (id: string) => [...auditLogKeys.all, 'detail', id] as const,
+};
+
+export const bankDetailRequestKeys = {
+  all: ['bank-detail-requests'] as const,
+  pending: () => [...bankDetailRequestKeys.all, 'pending'] as const,
+};

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { bookingKeys } from '@/lib/query-keys';
-import type { Booking } from '@/types/booking';
+import type { Booking, OwnerPayoutDetails } from '@/types/booking';
 import type { Paginated } from '@/types/common';
 
 interface BookingsFilter {
@@ -33,6 +33,17 @@ export function useBooking(id: string) {
       return res.data;
     },
     enabled: !!id,
+  });
+}
+
+export function useOwnerPayoutDetails(bookingId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: [...bookingKeys.detail(bookingId), 'owner-payout-details'] as const,
+    queryFn: async () => {
+      const res = await api.get<OwnerPayoutDetails>(`/bookings/admin/${bookingId}/owner-payout-details`);
+      return res.data;
+    },
+    enabled: enabled && !!bookingId,
   });
 }
 
@@ -72,6 +83,20 @@ export function useCompleteBooking() {
       toast.success('Booking completed.');
     },
     onError: () => toast.error('Failed to complete booking.'),
+  });
+}
+
+export function useRecordOwnerPayout() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, notes }: { id: string; notes?: string }) =>
+      api.patch(`/bookings/admin/${id}/owner-payout`, { notes }),
+    onSuccess: (_data, { id }) => {
+      qc.invalidateQueries({ queryKey: bookingKeys.all });
+      qc.invalidateQueries({ queryKey: bookingKeys.detail(id) });
+      toast.success('Owner payout recorded.');
+    },
+    onError: () => toast.error('Failed to record owner payout.'),
   });
 }
 

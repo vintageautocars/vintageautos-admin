@@ -78,7 +78,7 @@ function AgreeTermsModal({
             Set the final agreed payout to the owner and the rental price customers will see.
           </p>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="agreed-price">Owner Payout / Day (₦)</Label>
               <Input

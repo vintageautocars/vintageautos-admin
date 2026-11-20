@@ -75,6 +75,13 @@ export const router = createBrowserRouter([
             },
           },
           {
+            path: 'payments',
+            lazy: async () => {
+              const { default: Component } = await import('../pages/payments/list');
+              return { Component };
+            },
+          },
+          {
             path: 'users',
             lazy: async () => {
               const { default: Component } = await import('../pages/users/list');
@@ -89,9 +96,30 @@ export const router = createBrowserRouter([
             },
           },
           {
+            path: 'owners/bank-requests',
+            lazy: async () => {
+              const { default: Component } = await import('../pages/owners/bank-requests');
+              return { Component };
+            },
+          },
+          {
             path: 'settings',
             lazy: async () => {
               const { default: Component } = await import('../pages/settings');
+              return { Component };
+            },
+          },
+          {
+            path: 'settings/payment',
+            lazy: async () => {
+              const { default: Component } = await import('../pages/settings/payment');
+              return { Component };
+            },
+          },
+          {
+            path: 'audit-log',
+            lazy: async () => {
+              const { default: Component } = await import('../pages/audit-log/list');
               return { Component };
             },
           },

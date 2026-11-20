@@ -12,6 +12,8 @@ export function useNegotiation(vehicleId: string) {
       return res.data;
     },
     enabled: !!vehicleId,
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 }
 

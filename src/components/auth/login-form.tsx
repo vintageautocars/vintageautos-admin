@@ -38,6 +38,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
           autoComplete="email"
           placeholder="admin@example.com"
           aria-invalid={!!errors.email}
+          className="h-11"
           {...register('email')}
         />
         {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
@@ -51,7 +52,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
             type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
             placeholder="••••••••"
-            className="pr-10"
+            className="h-11 pr-10"
             aria-invalid={!!errors.password}
             {...register('password')}
           />

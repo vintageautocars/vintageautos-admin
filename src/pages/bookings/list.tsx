@@ -101,7 +101,7 @@ export default function BookingsListPage() {
   });
 
   // Normalise paginated vs array response
-  const rows = Array.isArray(data) ? data : (data?.items ?? []);
+  const rows = Array.isArray(data) ? data : ((data as { data?: Booking[] })?.data ?? []);
   const total = Array.isArray(data) ? rows.length : (data?.total ?? 0);
 
   const columns: Column<Booking>[] = [
@@ -125,7 +125,9 @@ export default function BookingsListPage() {
       render: (row) => (
         <div className="flex flex-col">
           <span>{row.customerName}</span>
-          <span className="text-xs text-muted-foreground">(internal)</span>
+          {row.customerEmail && (
+            <span className="text-xs text-muted-foreground">{row.customerEmail}</span>
+          )}
         </div>
       ),
     },
