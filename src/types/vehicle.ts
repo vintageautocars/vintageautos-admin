@@ -38,6 +38,7 @@ export interface Vehicle {
   documents?: VehicleDocument[];
   ownerId?: string;
   ownerName?: string;
+  ownerEmail?: string;
   createdAt: string;
   updatedAt: string;
 }

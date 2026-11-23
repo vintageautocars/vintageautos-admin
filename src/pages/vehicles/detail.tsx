@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Pencil } from 'lucide-react';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -58,7 +58,15 @@ export default function VehicleDetailPage() {
                 {vehicle.make} {vehicle.model} · {vehicle.year}
               </p>
             </div>
-            <StatusBadge status={vehicle.status} className="w-fit" />
+            <div className="flex items-center gap-2">
+              <StatusBadge status={vehicle.status} className="w-fit" />
+              <Button asChild size="sm" variant="outline">
+                <Link to={`/vehicles/${vehicle.id}/edit`}>
+                  <Pencil className="size-3.5 mr-1.5" />
+                  Edit
+                </Link>
+              </Button>
+            </div>
           </div>
 
           {/* Action bar */}

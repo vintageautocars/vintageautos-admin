@@ -57,13 +57,15 @@ function VehicleNameCell({ row }: { row: Vehicle }) {
 
 function OwnerCell({ row }: { row: Vehicle }) {
   return (
-    <span
-      className="inline-flex items-center gap-1 text-sm text-muted-foreground"
-      title="Internal only"
-    >
-      <Lock className="size-3 shrink-0" />
-      {row.ownerName ?? '—'}
-    </span>
+    <div className="inline-flex items-start gap-1.5" title="Internal only">
+      <Lock className="size-3 shrink-0 mt-0.5 text-muted-foreground" />
+      <div className="flex flex-col">
+        <span className="text-sm text-foreground leading-tight">{row.ownerName ?? '—'}</span>
+        {row.ownerEmail && (
+          <span className="text-xs text-muted-foreground leading-tight">{row.ownerEmail}</span>
+        )}
+      </div>
+    </div>
   );
 }
 

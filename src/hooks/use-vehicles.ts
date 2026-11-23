@@ -102,11 +102,49 @@ export function useAdminCreateVehicle() {
   });
 }
 
+export function useAdminUpdateVehicle() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
+      api.patch<Vehicle>(`/vehicles/admin/${id}`, data).then((r) => r.data),
+    onSuccess: (_data, { id }) => {
+      qc.invalidateQueries({ queryKey: vehicleKeys.all });
+      qc.invalidateQueries({ queryKey: vehicleKeys.detail(id) });
+      toast.success('Vehicle updated.');
+    },
+    onError: () => toast.error('Failed to update vehicle.'),
+  });
+}
+
 export function useFetchDocumentUrl() {
   return useMutation({
     mutationFn: ({ vehicleId, docId }: { vehicleId: string; docId: string }) =>
       api
         .get<{ url: string }>(`/vehicles/admin/${vehicleId}/documents/${docId}/url`)
         .then((r) => r.data.url),
+  });
+}
+
+export function useAdminDeletePhoto() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ vehicleId, photoId }: { vehicleId: string; photoId: string }) =>
+      api.delete(`/vehicles/admin/${vehicleId}/photos/${photoId}`),
+    onSuccess: (_data, { vehicleId }) => {
+      qc.invalidateQueries({ queryKey: vehicleKeys.detail(vehicleId) });
+    },
+    onError: () => toast.error('Failed to delete photo.'),
+  });
+}
+
+export function useAdminDeleteDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ vehicleId, docId }: { vehicleId: string; docId: string }) =>
+      api.delete(`/vehicles/admin/${vehicleId}/documents/${docId}`),
+    onSuccess: (_data, { vehicleId }) => {
+      qc.invalidateQueries({ queryKey: vehicleKeys.detail(vehicleId) });
+    },
+    onError: () => toast.error('Failed to delete document.'),
   });
 }

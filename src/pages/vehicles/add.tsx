@@ -18,13 +18,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { useOwners } from '@/hooks/use-owners';
+import { OwnerCombobox } from '@/components/shared/owner-combobox';
 import { useCategories } from '@/hooks/use-categories';
 import api from '@/lib/api';
 import { vehicleKeys } from '@/lib/query-keys';
 import { useQueryClient } from '@tanstack/react-query';
 import type { Vehicle, VehiclePhoto, VehicleDocument } from '@/types/vehicle';
-import type { OwnerProfile } from '@/types/owner';
 import { cn } from '@/lib/utils';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -131,10 +130,6 @@ function Field({ label, error, children, hint }: {
 // ─── Step 1: Vehicle details ──────────────────────────────────────────────────
 
 function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
-  const { data: ownersData, isLoading: ownersLoading } = useOwners({ status: 'APPROVED', pageSize: 200 } as Parameters<typeof useOwners>[0]);
-  const owners: OwnerProfile[] = Array.isArray(ownersData)
-    ? ownersData
-    : ((ownersData as { data?: OwnerProfile[] })?.data ?? []);
   const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
   const categories = categoriesData ?? [];
 
@@ -158,19 +153,7 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <Field label="Owner" error={errors.ownerId?.message}>
         <Controller name="ownerId" control={control} render={({ field }) => (
-          <Select value={field.value} onValueChange={field.onChange} disabled={ownersLoading}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={ownersLoading ? 'Loading owners…' : 'Select an owner'} />
-            </SelectTrigger>
-            <SelectContent>
-              {owners.map((o) => (
-                <SelectItem key={o.userId} value={o.userId}>
-                  {o.user ? `${o.user.firstName} ${o.user.lastName}` : o.userId}
-                  {o.user && <span className="ml-1.5 text-muted-foreground text-xs">({o.user.email})</span>}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <OwnerCombobox value={field.value} onChange={field.onChange} />
         )} />
       </Field>
 
@@ -195,7 +178,7 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
         <Field label="Category" error={errors.category?.message}>
           <Controller name="category" control={control} render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange} disabled={categoriesLoading}>
-              <SelectTrigger><SelectValue placeholder={categoriesLoading ? 'Loading…' : 'Select category'} /></SelectTrigger>
+              <SelectTrigger className="w-full"><SelectValue placeholder={categoriesLoading ? 'Loading…' : 'Select category'} /></SelectTrigger>
               <SelectContent>
                 {categories.map((c) => (
                   <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
@@ -208,7 +191,7 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
         <Field label="Transmission" error={errors.transmission?.message}>
           <Controller name="transmission" control={control} render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger><SelectValue placeholder="Select transmission" /></SelectTrigger>
+              <SelectTrigger className="w-full"><SelectValue placeholder="Select transmission" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="AUTOMATIC">Automatic</SelectItem>
                 <SelectItem value="MANUAL">Manual</SelectItem>
@@ -230,17 +213,15 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
 
       <Field label="Daily rate (₦)" error={errors.dailyRate?.message}
         hint="Rental price per day in Nigerian Naira.">
-        <div className="max-w-xs">
-          <Input type="number" step="0.01" min="0" placeholder="e.g. 75000"
-            {...register('dailyRate', { valueAsNumber: true })} />
-        </div>
+        <Input type="number" step="0.01" min="0" placeholder="e.g. 75000"
+          {...register('dailyRate', { valueAsNumber: true })} />
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="State" error={errors.state?.message}>
           <Controller name="state" control={control} render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
+              <SelectTrigger className="w-full"><SelectValue placeholder="Select state" /></SelectTrigger>
               <SelectContent>
                 {NIGERIA_STATES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
@@ -464,7 +445,7 @@ function Step3Documents({ vehicleId, initialDocs, onBack, onContinue }: {
         <div className="flex flex-col sm:flex-row gap-2 items-start">
           <div className="w-full sm:w-52 shrink-0">
             <Select value={docType} onValueChange={(v) => setDocType(v as DocType)} disabled={uploading}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {(Object.entries(DOC_TYPE_LABELS) as [DocType, string][]).map(([v, l]) => (
                   <SelectItem key={v} value={v}>{l}</SelectItem>
@@ -472,10 +453,10 @@ function Step3Documents({ vehicleId, initialDocs, onBack, onContinue }: {
               </SelectContent>
             </Select>
           </div>
-          <Input className="h-9 text-sm flex-1" placeholder="Label (optional)" value={docName}
+          <Input className="text-sm flex-1" placeholder="Label (optional)" value={docName}
             onChange={(e) => setDocName(e.target.value)} disabled={uploading} />
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-            className="flex items-center gap-2 px-3 h-9 rounded-lg border border-dashed border-border hover:border-primary hover:bg-primary/5 text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 shrink-0">
+            className="flex items-center gap-2 px-3 h-10 rounded-lg border border-dashed border-border hover:border-primary hover:bg-primary/5 text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 shrink-0">
             {uploading ? <Loader2 className="size-4 animate-spin" /> : <FilePlus className="size-4" />}
             {uploading ? 'Uploading…' : 'Choose file'}
           </button>
