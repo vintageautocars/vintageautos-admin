@@ -107,6 +107,7 @@ function UserVehiclesSection({ userId }: { userId: string }) {
           total={total}
           page={1}
           pageSize={4}
+          onPageChange={() => {}}
           isLoading={isLoading}
           isError={isError}
           onRetry={() => refetch()}

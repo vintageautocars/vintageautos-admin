@@ -25,6 +25,7 @@ export interface Vehicle {
   year: number;
   category: string;
   description: string;
+  rentalTerms?: string;
   transmission: TransmissionType;
   dailyRate: number;
   agreedPrice: number | null;
