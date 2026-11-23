@@ -9,5 +9,6 @@ export interface User {
   roles: UserRole[];
   avatarUrl: string | null;
   isEmailVerified: boolean;
+  mustChangePassword: boolean;
   createdAt: string;
 }

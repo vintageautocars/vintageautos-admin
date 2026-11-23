@@ -43,11 +43,11 @@ export function useUser(id: string) {
 export function useCreateAdminUser() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: { email: string; password: string; firstName: string; lastName: string; phone?: string }) =>
+    mutationFn: (data: { email: string; firstName: string; lastName: string; phone?: string }) =>
       api.post<AdminUser>('/users/admin', data).then(r => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: userKeys.all });
-      toast.success('Admin user created.');
+      toast.success('Admin user created. An invite email has been sent.');
     },
     onError: () => toast.error('Failed to create admin user.'),
   });

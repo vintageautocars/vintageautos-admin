@@ -1,14 +1,13 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Mail } from 'lucide-react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PasswordInput } from '@/components/auth/password-input';
 import { useCreateAdminUser } from '@/hooks/use-users';
 
 const schema = z.object({
@@ -16,9 +15,6 @@ const schema = z.object({
   lastName:  z.string().min(1, 'Required'),
   email:     z.string().email('Invalid email'),
   phone:     z.string().optional(),
-  password:  z.string()
-    .min(8, 'At least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Must include uppercase, lowercase and a number'),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -77,10 +73,11 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
             <Input id="cu-phone" type="tel" placeholder="+234 800 000 0000" {...register('phone')} disabled={isSubmitting} />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="cu-password">Password</Label>
-            <PasswordInput id="cu-password" {...register('password')} disabled={isSubmitting} />
-            {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+          <div className="flex items-start gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2.5">
+            <Mail className="size-4 text-muted-foreground mt-0.5 shrink-0" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              A secure temporary password will be generated and emailed to this address. The user will be required to change it on their first login.
+            </p>
           </div>
 
           <DialogFooter className="pt-2">
@@ -89,7 +86,7 @@ export function CreateUserModal({ open, onOpenChange }: CreateUserModalProps) {
             </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-              Create
+              Create & send invite
             </Button>
           </DialogFooter>
         </form>
