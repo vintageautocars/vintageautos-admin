@@ -104,3 +104,11 @@ export function useDeleteUser() {
     onError: () => toast.error('Failed to delete user.'),
   });
 }
+
+export function useResetAdminPassword() {
+  return useMutation({
+    mutationFn: (id: string) => api.patch(`/users/admin/${id}/reset-password`),
+    onSuccess: () => toast.success('Password reset. A new temporary password has been emailed to the user.'),
+    onError: () => toast.error('Failed to reset password.'),
+  });
+}

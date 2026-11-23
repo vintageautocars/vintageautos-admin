@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Loader2, Shield, ShieldOff, Trash2, UserCheck, UserX } from 'lucide-react';
+import { KeyRound, Loader2, Shield, ShieldOff, Trash2, UserCheck, UserX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/shared/confirm-modal';
 import {
   useActivateUser,
   useDeactivateUser,
   useDeleteUser,
+  useResetAdminPassword,
   useUpdateUserRoles,
 } from '@/hooks/use-users';
 import { useAuth } from '@/app/auth-context';
@@ -43,15 +44,18 @@ export function UserActions({ user }: UserActionsProps) {
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmDeactivate, setConfirmDeactivate] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
 
-  const activate   = useActivateUser();
-  const deactivate = useDeactivateUser();
-  const updateRoles = useUpdateUserRoles();
-  const deleteUser = useDeleteUser();
+  const activate      = useActivateUser();
+  const deactivate    = useDeactivateUser();
+  const updateRoles   = useUpdateUserRoles();
+  const deleteUser    = useDeleteUser();
+  const resetPassword = useResetAdminPassword();
 
-  const isSelf        = me?.id === user.id;
-  const isSuperAdmin  = user.roles.includes('SUPER_ADMIN');
-  const isProtected   = isSelf || isSuperAdmin;
+  const isSelf          = me?.id === user.id;
+  const isSuperAdmin    = user.roles.includes('SUPER_ADMIN');
+  const isProtected     = isSelf || isSuperAdmin;
+  const amISuperAdmin   = me?.roles.includes('SUPER_ADMIN') ?? false;
 
   function toggleRole(role: UserRole) {
     const hasRole = user.roles.includes(role);
@@ -133,8 +137,38 @@ export function UserActions({ user }: UserActionsProps) {
         </div>
       </div>
 
-      {/* Delete */}
-      {!isProtected && (
+      {/* Danger zone — reset password + delete */}
+      {!isProtected && amISuperAdmin && (
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-[var(--color-gray-text)] uppercase tracking-wide font-medium">Danger zone</p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={resetPassword.isPending}
+              onClick={() => setConfirmReset(true)}
+              className="text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/10"
+            >
+              {resetPassword.isPending
+                ? <Loader2 className="size-3.5 animate-spin mr-1" />
+                : <KeyRound className="size-3.5 mr-1" />}
+              Reset password
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setConfirmDelete(true)}
+              className="text-destructive border-destructive/30 hover:bg-destructive/10"
+            >
+              <Trash2 className="size-3.5 mr-1" />
+              Delete user
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete for non-super-admins who are plain admins */}
+      {!isProtected && !amISuperAdmin && (
         <div className="flex flex-col gap-2">
           <p className="text-xs text-[var(--color-gray-text)] uppercase tracking-wide font-medium">Danger zone</p>
           <Button
@@ -163,6 +197,16 @@ export function UserActions({ user }: UserActionsProps) {
         confirmLabel="Deactivate"
         variant="destructive"
         onConfirm={() => deactivate.mutate(user.id)}
+      />
+
+      <ConfirmModal
+        open={confirmReset}
+        onOpenChange={setConfirmReset}
+        title="Reset password?"
+        description={`A new temporary password will be generated and emailed to ${user.firstName} ${user.lastName} at ${user.email}. They will be required to change it on next login.`}
+        confirmLabel="Reset password"
+        variant="destructive"
+        onConfirm={() => resetPassword.mutate(user.id)}
       />
 
       <ConfirmModal

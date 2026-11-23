@@ -13,6 +13,7 @@ interface BookingsFilter {
   startDate?: string;
   endDate?: string;
   search?: string;
+  customerId?: string;
 }
 
 export function useBookings(filters: BookingsFilter = {}) {

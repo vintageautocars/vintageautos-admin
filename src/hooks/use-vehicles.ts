@@ -14,6 +14,7 @@ interface VehiclesFilter {
   isFeatured?: boolean;
   isAvailable?: boolean;
   search?: string;
+  ownerId?: string;
 }
 
 export function useVehicles(filters: VehiclesFilter = {}) {
