@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import imageCompression from 'browser-image-compression';
 import {
-  ArrowLeft, ArrowRight, CheckCircle2, FilePlus, FileText,
+  ArrowLeft, ArrowRight, Check, CheckCircle2, ChevronsUpDown, FilePlus, FileText,
   ImagePlus, Loader2, Send, X,
 } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
@@ -17,8 +17,13 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
+} from '@/components/ui/command';
 import { OwnerCombobox } from '@/components/shared/owner-combobox';
 import { useCategories } from '@/hooks/use-categories';
+import { useMakes, useModels, generateYears } from '@/hooks/use-car-catalog';
 import api from '@/lib/api';
 import { vehicleKeys } from '@/lib/query-keys';
 import { useQueryClient } from '@tanstack/react-query';
@@ -127,13 +132,96 @@ function Field({ label, error, children, hint }: {
   );
 }
 
+// ─── Searchable select combobox ───────────────────────────────────────────────
+
+function SearchableSelect({
+  value,
+  onChange,
+  items,
+  disabled,
+  placeholder,
+  searchPlaceholder = 'Search…',
+  emptyText = 'No results found.',
+}: {
+  value: string;
+  onChange: (name: string) => void;
+  items: { id: string; name: string }[];
+  disabled: boolean;
+  placeholder: string;
+  searchPlaceholder?: string;
+  emptyText?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+
+  const filtered = items.filter((m) =>
+    m.name.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          disabled={disabled}
+          className="w-full justify-between font-normal"
+        >
+          <span className={cn('truncate', !value && 'text-muted-foreground')}>
+            {value || placeholder}
+          </span>
+          <ChevronsUpDown className="size-4 shrink-0 opacity-50 ml-2" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder={searchPlaceholder}
+            value={search}
+            onValueChange={setSearch}
+          />
+          <CommandList>
+            {filtered.length === 0 && <CommandEmpty>{emptyText}</CommandEmpty>}
+            <CommandGroup>
+              {filtered.map((m) => (
+                <CommandItem
+                  key={m.id}
+                  value={m.name}
+                  onSelect={() => {
+                    onChange(m.name);
+                    setOpen(false);
+                    setSearch('');
+                  }}
+                >
+                  <Check className={cn('mr-2 size-4', value === m.name ? 'opacity-100' : 'opacity-0')} />
+                  {m.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 // ─── Step 1: Vehicle details ──────────────────────────────────────────────────
 
 function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
   const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
   const categories = categoriesData ?? [];
 
-  const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
+  // Cascading make → model → year
+  const { data: makesData, isLoading: makesLoading }  = useMakes();
+  const makes = makesData ?? [];
+  const [selectedMakeId, setSelectedMakeId]           = useState<string | null>(null);
+  const { data: modelsData, isLoading: modelsLoading } = useModels(selectedMakeId);
+  const models = modelsData ?? [];
+  const [yearOptions, setYearOptions]                 = useState<number[]>([]);
+
+  const { register, control, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
@@ -163,14 +251,64 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Make */}
         <Field label="Make" error={errors.make?.message}>
-          <Input placeholder="e.g. Mercedes-Benz" {...register('make')} />
+          <Controller name="make" control={control} render={({ field }) => (
+            <SearchableSelect
+              value={field.value ?? ''}
+              onChange={(name) => {
+                field.onChange(name);
+                const make = makes.find((m) => m.name === name);
+                setSelectedMakeId(make?.id ?? null);
+                setValue('model', '');
+                setValue('year', '' as unknown as number);
+                setYearOptions([]);
+              }}
+              items={makes}
+              disabled={makesLoading}
+              placeholder={makesLoading ? 'Loading…' : 'Search make…'}
+              searchPlaceholder="Search make…"
+              emptyText="No makes found."
+            />
+          )} />
         </Field>
+
+        {/* Model */}
         <Field label="Model" error={errors.model?.message}>
-          <Input placeholder="e.g. 230 SL" {...register('model')} />
+          <Controller name="model" control={control} render={({ field }) => (
+            <SearchableSelect
+              value={field.value ?? ''}
+              onChange={(name) => {
+                field.onChange(name);
+                const mdl = models.find((m) => m.name === name);
+                setValue('year', '' as unknown as number);
+                setYearOptions(mdl ? generateYears(mdl.startYear, mdl.endYear) : []);
+              }}
+              items={models}
+              disabled={!selectedMakeId || modelsLoading}
+              placeholder={modelsLoading ? 'Loading…' : !selectedMakeId ? 'Select make first' : 'Search model…'}
+              searchPlaceholder="Search model…"
+              emptyText="No models found."
+            />
+          )} />
         </Field>
+
+        {/* Year */}
         <Field label="Year" error={errors.year?.message}>
-          <Input type="number" placeholder="e.g. 1965" {...register('year', { valueAsNumber: true })} />
+          <Controller name="year" control={control} render={({ field }) => (
+            <Select
+              value={field.value ? String(field.value) : ''}
+              onValueChange={(val) => field.onChange(parseInt(val, 10))}
+              disabled={yearOptions.length === 0}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={yearOptions.length === 0 ? 'Select model first' : 'Select year'} />
+              </SelectTrigger>
+              <SelectContent>
+                {yearOptions.map((y) => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )} />
         </Field>
       </div>
 

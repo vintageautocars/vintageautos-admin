@@ -10,6 +10,7 @@ import {
   ScrollText,
   Landmark,
   Tag,
+  BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePendingCounts } from '@/hooks/use-pending-counts';
@@ -35,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/settings',       label: 'Settings',           icon: Settings,       end: true },
   { to: '/settings/payment',     label: 'Payment Settings',  icon: Settings2 },
   { to: '/settings/categories',  label: 'Categories',        icon: Tag },
+  { to: '/settings/car-catalog', label: 'Car Makes & Models', icon: BookOpen },
   { to: '/audit-log',            label: 'Audit Log',         icon: ScrollText },
 ];
 

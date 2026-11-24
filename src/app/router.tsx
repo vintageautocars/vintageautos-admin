@@ -138,6 +138,13 @@ export const router = createBrowserRouter([
             },
           },
           {
+            path: 'settings/car-catalog',
+            lazy: async () => {
+              const { default: Component } = await import('../pages/settings/car-catalog');
+              return { Component };
+            },
+          },
+          {
             path: 'audit-log',
             lazy: async () => {
               const { default: Component } = await import('../pages/audit-log/list');
