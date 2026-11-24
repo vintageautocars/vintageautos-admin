@@ -114,8 +114,6 @@ export default function VehicleDetailPage() {
                     vehicleId={vehicle.id}
                     vehicleStatus={vehicle.status}
                     dailyRate={vehicle.dailyRate}
-                    ownerProfileId={vehicle.ownerProfileId}
-                    ownerOnboardingStatus={vehicle.ownerOnboardingStatus}
                   />
                 </CardContent>
               </Card>

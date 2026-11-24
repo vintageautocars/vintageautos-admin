@@ -42,8 +42,6 @@ export interface Vehicle {
   ownerId?: string;
   ownerName?: string;
   ownerEmail?: string;
-  ownerProfileId?: string | null;
-  ownerOnboardingStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | null;
   createdAt: string;
   updatedAt: string;
 }

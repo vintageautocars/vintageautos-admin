@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router';
 import {
   LayoutDashboard,
-  Users,
   Car,
   CalendarCheck,
   CreditCard,
@@ -32,7 +31,6 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/bookings',       label: 'Bookings',           icon: CalendarCheck,  badgeKey: 'bookings' },
   { to: '/vehicles',       label: 'Vehicles',           icon: Car,            badgeKey: 'vehicles' },
   { to: '/payments',       label: 'Payments',           icon: CreditCard,     badgeKey: 'payments' },
-  { to: '/owners',         label: 'Owner Applications', icon: Users,          badgeKey: 'owners', end: true },
   { to: '/owners/bank-requests', label: 'Bank Detail Requests', icon: Landmark, badgeKey: 'bankRequests' },
   { to: '/settings',       label: 'Settings',           icon: Settings,       end: true },
   { to: '/settings/payment',     label: 'Payment Settings',  icon: Settings2 },
