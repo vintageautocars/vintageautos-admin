@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { format } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
+import type { BookingSlot } from '@/types/common';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -27,4 +28,16 @@ export function durationDays(start: string | Date, end: string | Date): number {
 export function truncateMiddle(str: string, head = 6, tail = 4): string {
   if (str.length <= head + tail + 3) return str;
   return `${str.slice(0, head)}…${str.slice(-tail)}`;
+}
+
+export function slotLabel(slot: BookingSlot): string {
+  return slot === 'DAY' ? 'Day' : 'Night';
+}
+
+export function slotHours(slot: BookingSlot): string {
+  return slot === 'DAY' ? '6:00 AM – 6:00 PM' : '6:00 PM – 6:00 AM';
+}
+
+export function formatSlotCount(count: number): string {
+  return `${count} slot${count !== 1 ? 's' : ''}`;
 }

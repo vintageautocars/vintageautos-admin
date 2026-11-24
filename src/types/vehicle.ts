@@ -1,7 +1,6 @@
 import type { VehicleStatus } from './common';
 
 export type TransmissionType = 'AUTOMATIC' | 'MANUAL';
-export type BodyStyleType    = 'HARDTOP' | 'CONVERTIBLE';
 
 export interface VehiclePhoto {
   id: string;
@@ -25,10 +24,7 @@ export interface Vehicle {
   model: string;
   year: number;
   category: string;
-  description: string;
-  rentalTerms?: string;
   transmission: TransmissionType;
-  bodyStyle:    BodyStyleType | null;
   dailyRate: number;
   agreedPrice: number | null;
   state: string;

@@ -1,4 +1,4 @@
-import type { BookingStatus, PaymentStatus, PaymentMode } from './common';
+import type { BookingSlot, BookingStatus, PaymentStatus, PaymentMode } from './common';
 
 export interface OwnerPayoutDetails {
   ownerName:     string;
@@ -15,6 +15,12 @@ export interface BookingPaymentSummary {
   amount: number;
 }
 
+export interface BookingSlotEntry {
+  id: string;
+  date: string;
+  slot: BookingSlot;
+}
+
 export interface Booking {
   id: string;
   vehicleId: string;
@@ -25,7 +31,9 @@ export interface Booking {
   customerEmail?: string;
   startDate: string;
   endDate: string;
-  totalDays: number;
+  slot: BookingSlot | null; // deprecated — legacy single-slot bookings
+  slotEntries: BookingSlotEntry[];
+  slotCount: number;
   dailyRate: number;
   totalAmount: number;
   status: BookingStatus;

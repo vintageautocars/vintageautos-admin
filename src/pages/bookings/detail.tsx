@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router';
-import { ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, AlertCircle, CheckCircle2, Sun, Moon } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { BookingActions } from '@/components/bookings/booking-actions';
@@ -8,7 +8,8 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useBooking } from '@/hooks/use-bookings';
-import { formatDate, formatCurrency } from '@/lib/utils';
+import { formatDate, formatCurrency, slotLabel, slotHours, formatSlotCount } from '@/lib/utils';
+import type { BookingSlotEntry } from '@/types/booking';
 
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -16,6 +17,22 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
       <span className="text-xs text-muted-foreground">{label}</span>
       <span className="text-sm font-medium text-foreground">{children}</span>
     </div>
+  );
+}
+
+function SlotRow({ entry }: { entry: BookingSlotEntry }) {
+  const Icon = entry.slot === 'DAY' ? Sun : Moon;
+  return (
+    <li className="flex items-center justify-between gap-3 py-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <Icon className="size-4 text-primary shrink-0" />
+        <span className="text-sm font-medium text-foreground truncate">
+          {formatDate(entry.date)}
+        </span>
+        <span className="text-xs text-muted-foreground shrink-0">· {slotLabel(entry.slot)}</span>
+      </div>
+      <span className="text-xs text-muted-foreground shrink-0">{slotHours(entry.slot)}</span>
+    </li>
   );
 }
 
@@ -96,18 +113,18 @@ export default function BookingDetailPage() {
                       )}
                     </DetailRow>
 
-                    <DetailRow label="Start Date">{formatDate(booking.startDate)}</DetailRow>
-                    <DetailRow label="End Date">{formatDate(booking.endDate)}</DetailRow>
-                    <DetailRow label="Duration">
-                      {booking.totalDays} day{booking.totalDays !== 1 ? 's' : ''}
+                    <DetailRow label="Slots">
+                      {formatSlotCount(booking.slotCount)}
+                      <span className="block text-xs text-muted-foreground">
+                        {formatDate(booking.startDate)} – {formatDate(booking.endDate)}
+                      </span>
                     </DetailRow>
                   </div>
 
                   {/* Right column */}
                   <div className="flex flex-col gap-4">
-                    <DetailRow label="Daily Rate">
-                      {formatCurrency(booking.dailyRate)} × {booking.totalDays} day
-                      {booking.totalDays !== 1 ? 's' : ''}
+                    <DetailRow label="Rate per Slot">
+                      {formatCurrency(booking.dailyRate)} × {formatSlotCount(booking.slotCount)}
                     </DetailRow>
                     <DetailRow label="Total Amount">
                       <span className="text-base font-semibold">
@@ -137,8 +154,31 @@ export default function BookingDetailPage() {
               </CardContent>
             </Card>
 
-            {/* Actions Card */}
+            {/* Booked Slots Card */}
             <Card>
+              <CardHeader>
+                <CardTitle>Booked Slots</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {booking.slotEntries.length > 0 ? (
+                  <ul className="divide-y divide-border/60">
+                    {booking.slotEntries.map((entry) => (
+                      <SlotRow key={entry.id} entry={entry} />
+                    ))}
+                  </ul>
+                ) : booking.slot ? (
+                  // Legacy single-slot booking (pre-slotEntries migration)
+                  <ul className="divide-y divide-border/60">
+                    <SlotRow entry={{ id: booking.id, date: booking.startDate, slot: booking.slot }} />
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No slot details recorded.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Actions Card */}
+            <Card className="lg:col-span-2">
               <CardHeader>
                 <CardTitle>Booking Actions</CardTitle>
               </CardHeader>

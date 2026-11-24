@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams, Link } from 'react-router';
-import { CreditCard } from 'lucide-react';
+import { CreditCard, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { DataTable } from '@/components/shared/data-table';
 import { StatusBadge } from '@/components/shared/status-badge';
@@ -148,10 +148,12 @@ function buildColumns(onRowClick: (row: Payment) => void): Column<Payment>[] {
       render: (row) => (
         <Link
           to={`/bookings/${row.bookingId}`}
-          className="text-xs text-primary hover:underline"
+          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
           onClick={(e) => e.stopPropagation()}
+          title="Open booking details"
         >
           {row.bookingId.slice(0, 10)}…
+          <ExternalLink className="size-3 shrink-0" />
         </Link>
       ),
     },

@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select';
 import { useBookings } from '@/hooks/use-bookings';
 import { NIGERIAN_STATES } from '@/lib/nigerian-states';
-import { formatDate, formatCurrency, truncateMiddle } from '@/lib/utils';
+import { formatDate, formatCurrency, truncateMiddle, formatSlotCount } from '@/lib/utils';
 import type { Column } from '@/components/shared/data-table';
 import type { Booking } from '@/types/booking';
 import type { BookingStatus } from '@/types/common';
@@ -142,9 +142,9 @@ export default function BookingsListPage() {
       render: (row) => formatDate(row.endDate),
     },
     {
-      key: 'totalDays',
-      header: 'Duration',
-      render: (row) => `${row.totalDays} day${row.totalDays !== 1 ? 's' : ''}`,
+      key: 'slotCount',
+      header: 'Slots',
+      render: (row) => formatSlotCount(row.slotCount),
     },
     {
       key: 'totalAmount',

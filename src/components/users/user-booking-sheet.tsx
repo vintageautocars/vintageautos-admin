@@ -1,12 +1,12 @@
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Sun, Moon } from 'lucide-react';
 import { Link } from 'react-router';
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
 } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { StatusBadge } from '@/components/shared/status-badge';
-import { formatDate, formatCurrency } from '@/lib/utils';
-import type { Booking } from '@/types/booking';
+import { formatDate, formatCurrency, slotLabel, formatSlotCount } from '@/lib/utils';
+import type { Booking, BookingSlotEntry } from '@/types/booking';
 
 interface Row {
   label: string;
@@ -66,14 +66,43 @@ export function UserBookingSheet({ booking, open, onOpenChange }: UserBookingShe
 
             <Separator />
 
-            {/* Dates */}
+            {/* Slots */}
             <div>
-              <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Rental period</p>
-              <div className="divide-y divide-border/60">
-                <InfoRow label="Start date"  value={formatDate(booking.startDate)} />
-                <InfoRow label="End date"    value={formatDate(booking.endDate)} />
-                <InfoRow label="Duration"    value={`${booking.totalDays} day${booking.totalDays !== 1 ? 's' : ''}`} />
-              </div>
+              <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-2">
+                Booked slots · {formatSlotCount(booking.slotCount)}
+              </p>
+              {booking.slotEntries.length > 0 ? (
+                <ul className="divide-y divide-border/60">
+                  {booking.slotEntries.map((entry: BookingSlotEntry) => {
+                    const Icon = entry.slot === 'DAY' ? Sun : Moon;
+                    return (
+                      <li key={entry.id} className="flex items-center gap-2 py-2">
+                        <Icon className="size-3.5 text-primary shrink-0" />
+                        <span className="text-sm font-medium text-foreground truncate">
+                          {formatDate(entry.date)}
+                        </span>
+                        <span className="text-xs text-muted-foreground">· {slotLabel(entry.slot)}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : booking.slot ? (
+                <ul className="divide-y divide-border/60">
+                  <li className="flex items-center gap-2 py-2">
+                    {booking.slot === 'DAY' ? (
+                      <Sun className="size-3.5 text-primary shrink-0" />
+                    ) : (
+                      <Moon className="size-3.5 text-primary shrink-0" />
+                    )}
+                    <span className="text-sm font-medium text-foreground truncate">
+                      {formatDate(booking.startDate)}
+                    </span>
+                    <span className="text-xs text-muted-foreground">· {slotLabel(booking.slot)}</span>
+                  </li>
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground">No slot details recorded.</p>
+              )}
             </div>
 
             <Separator />
@@ -82,7 +111,8 @@ export function UserBookingSheet({ booking, open, onOpenChange }: UserBookingShe
             <div>
               <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Pricing</p>
               <div className="divide-y divide-border/60">
-                <InfoRow label="Daily rate"    value={formatCurrency(booking.dailyRate)} />
+                <InfoRow label="Rate per slot" value={formatCurrency(booking.dailyRate)} />
+                <InfoRow label="Slots"         value={formatSlotCount(booking.slotCount)} />
                 <InfoRow label="Total amount"  value={
                   <span className="text-primary font-semibold">{formatCurrency(booking.totalAmount)}</span>
                 } />

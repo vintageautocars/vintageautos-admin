@@ -62,9 +62,6 @@ const schema = z.object({
   year:         z.number().int().min(1886).max(new Date().getFullYear()),
   category:     z.string().min(1, 'Select a category'),
   transmission: z.enum(['AUTOMATIC', 'MANUAL']),
-  bodyStyle:    z.enum(['HARDTOP', 'CONVERTIBLE'], 'Select a body style'),
-  description:  z.string().min(10).max(2000),
-  rentalTerms:  z.string().max(1000).optional(),
   dailyRate:    z.number().positive(),
   state:        z.string().min(1, 'Select a state'),
   city:         z.string().min(1),
@@ -149,9 +146,6 @@ function Step1Details({ vehicle, onComplete }: {
       year:         vehicle.year,
       category:     vehicle.category,
       transmission: vehicle.transmission,
-      bodyStyle:    vehicle.bodyStyle ?? undefined,
-      description:  vehicle.description,
-      rentalTerms:  vehicle.rentalTerms ?? '',
       dailyRate:    vehicle.dailyRate,
       state:        vehicle.state,
       city:         vehicle.city,
@@ -161,7 +155,7 @@ function Step1Details({ vehicle, onComplete }: {
   async function onSubmit(data: FormValues) {
     const updated = await updateVehicle({
       id: vehicle.id,
-      data: { ...data, rentalTerms: data.rentalTerms || undefined },
+      data,
     });
     onComplete(updated as Vehicle);
   }
@@ -211,29 +205,7 @@ function Step1Details({ vehicle, onComplete }: {
           )} />
         </Field>
 
-        <Field label="Body style" error={errors.bodyStyle?.message}>
-          <Controller name="bodyStyle" control={control} render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select body style" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="HARDTOP">Hardtop</SelectItem>
-                <SelectItem value="CONVERTIBLE">Convertible</SelectItem>
-              </SelectContent>
-            </Select>
-          )} />
-        </Field>
       </div>
-
-      <Field label="Description" error={errors.description?.message} hint="Minimum 10 characters.">
-        <Textarea rows={4} placeholder="Describe the vehicle…" {...register('description')} />
-      </Field>
-
-      <Field label="Rental terms" error={errors.rentalTerms?.message}
-        hint="Optional — deposit requirements, usage restrictions, or special conditions.">
-        <Textarea rows={3} placeholder="e.g. A refundable deposit of ₦50,000 is required…" {...register('rentalTerms')} />
-      </Field>
 
       <Field label="Daily rate (₦)" error={errors.dailyRate?.message} hint="Rental price per day in Nigerian Naira.">
         <Input type="number" step="0.01" min="0" placeholder="e.g. 75000"
@@ -573,12 +545,6 @@ function Step4Review({ vehicle, onBack, onDone }: {
               <p className="font-medium">{!vehicle.documents?.length ? 'None' : `${vehicle.documents.length} total`}</p>
             </div>
           </div>
-          {vehicle.description && (
-            <div className="pt-3 border-t border-border">
-              <p className="text-xs text-muted-foreground mb-1">Description</p>
-              <p className="text-sm text-foreground line-clamp-3">{vehicle.description}</p>
-            </div>
-          )}
         </div>
       </div>
 

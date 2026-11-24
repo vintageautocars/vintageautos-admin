@@ -11,3 +11,4 @@ export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | '
 export type OwnerStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 export type PaymentStatus = 'PENDING' | 'AWAITING_VERIFICATION' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type PaymentMode = 'MANUAL' | 'AUTOMATIC';
+export type BookingSlot = 'DAY' | 'NIGHT';

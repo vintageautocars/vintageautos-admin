@@ -41,11 +41,6 @@ export function VehicleOverview({ vehicle }: VehicleOverviewProps) {
       {/* Left column */}
       <div className="flex flex-col gap-4">
         <DetailRow label="Category">{categoryLabel(vehicle.category)}</DetailRow>
-        <DetailRow label="Description">
-          <span className="whitespace-pre-wrap text-sm font-normal text-foreground">
-            {vehicle.description}
-          </span>
-        </DetailRow>
         <DetailRow label="Transmission">
           {vehicle.transmission.charAt(0) + vehicle.transmission.slice(1).toLowerCase()}
         </DetailRow>

@@ -1,8 +1,19 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
+import axios from 'axios';
 import api from '@/lib/api';
 import { queryClient } from '@/lib/query-client';
 import type { User } from '@/types/auth';
+
+function extractApiMessage(err: unknown, fallback: string): Error {
+  if (axios.isAxiosError(err)) {
+    const data = err.response?.data as { message?: string | string[] } | undefined;
+    const raw = data?.message;
+    const msg = Array.isArray(raw) ? raw.join(', ') : raw;
+    if (msg) return new Error(msg);
+  }
+  return new Error(fallback);
+}
 
 interface AuthContextValue {
   user: User | null;
@@ -52,7 +63,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [logout]);
 
   const login = useCallback(async (email: string, password: string): Promise<User> => {
-    await api.post('/auth/login', { email, password });
+    try {
+      await api.post('/auth/login', { email, password });
+    } catch (err) {
+      throw extractApiMessage(err, 'Login failed. Please try again.');
+    }
     const me = await fetchMe();
     if (!me) throw new Error('Failed to retrieve user after login.');
 
