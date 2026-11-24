@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import imageCompression from 'browser-image-compression';
 import {
-  ArrowLeft, ArrowRight, Check, CheckCircle2, ChevronsUpDown, FilePlus, FileText,
+  ArrowLeft, ArrowRight, Check, CheckCircle2, ChevronsUpDown,
   ImagePlus, Loader2, Send, X,
 } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
@@ -27,7 +27,7 @@ import { useMakes, useModels, generateYears } from '@/hooks/use-car-catalog';
 import api from '@/lib/api';
 import { vehicleKeys } from '@/lib/query-keys';
 import { useQueryClient } from '@tanstack/react-query';
-import type { Vehicle, VehiclePhoto, VehicleDocument } from '@/types/vehicle';
+import type { Vehicle, VehiclePhoto } from '@/types/vehicle';
 import { cn } from '@/lib/utils';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -39,15 +39,6 @@ const NIGERIA_STATES = [
   'Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto',
   'Taraba','Yobe','Zamfara',
 ];
-
-const DOC_TYPE_LABELS = {
-  REGISTRATION_PAPER: 'Registration paper',
-  INSURANCE:          'Insurance certificate',
-  ROADWORTHINESS:     'Roadworthiness certificate',
-  OTHER:              'Other document',
-} as const;
-
-type DocType = keyof typeof DOC_TYPE_LABELS;
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 
@@ -76,7 +67,7 @@ interface UploadSig {
 
 // ─── Step indicator ───────────────────────────────────────────────────────────
 
-const STEPS = ['Details', 'Photos', 'Documents', 'Review'] as const;
+const STEPS = ['Details', 'Photos', 'Review'] as const;
 
 function StepIndicator({ current }: { current: number }) {
   return (
@@ -527,108 +518,7 @@ function Step2Photos({ vehicleId, initialPhotos, onBack, onContinue }: {
   );
 }
 
-// ─── Step 3: Documents ────────────────────────────────────────────────────────
-
-function Step3Documents({ vehicleId, initialDocs, onBack, onContinue }: {
-  vehicleId: string;
-  initialDocs: VehicleDocument[];
-  onBack: () => void;
-  onContinue: (docs: VehicleDocument[]) => void;
-}) {
-  const [confirmed, setConfirmed] = useState<VehicleDocument[]>(initialDocs);
-  const [docType, setDocType]     = useState<DocType>('REGISTRATION_PAPER');
-  const [docName, setDocName]     = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [error, setError]         = useState<string | null>(null);
-  const fileRef                   = useRef<HTMLInputElement>(null);
-
-  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) return;
-    const name = docName.trim() || file.name.replace(/\.[^.]+$/, '');
-    setUploading(true);
-    setError(null);
-    try {
-      const sigRes = await api.get<UploadSig>(`/vehicles/admin/${vehicleId}/documents/upload-url`);
-      const sig = sigRes.data;
-      const fd = new FormData();
-      fd.append('file', file);
-      fd.append('api_key', sig.apiKey);
-      fd.append('timestamp', String(sig.timestamp));
-      fd.append('signature', sig.signature);
-      fd.append('folder', sig.folder);
-      const cloudRes = await fetch(`https://api.cloudinary.com/v1_1/${sig.cloudName}/raw/upload`, { method: 'POST', body: fd });
-      if (!cloudRes.ok) throw new Error(`Document "${name}" failed to upload.`);
-      const cloudData = await cloudRes.json() as { public_id: string };
-      const docRes = await api.post<VehicleDocument>(`/vehicles/admin/${vehicleId}/documents`, { publicId: cloudData.public_id, type: docType, name });
-      setConfirmed((prev) => [...prev, docRes.data]);
-      setDocName('');
-      toast.success(`"${name}" uploaded.`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not upload document.');
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">Upload supporting documents (PDF). This step is optional.</p>
-
-      {confirmed.length > 0 && (
-        <ul className="space-y-2">
-          {confirmed.map((doc) => (
-            <li key={doc.id} className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2.5">
-              <FileText className="size-4 text-muted-foreground shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{doc.name}</p>
-                <p className="text-xs text-muted-foreground">{DOC_TYPE_LABELS[doc.type as DocType] ?? doc.type}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div>
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Add a document</p>
-        <div className="flex flex-col sm:flex-row gap-2 items-start">
-          <div className="w-full sm:w-52 shrink-0">
-            <Select value={docType} onValueChange={(v) => setDocType(v as DocType)} disabled={uploading}>
-              <SelectTrigger className="w-full text-sm"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {(Object.entries(DOC_TYPE_LABELS) as [DocType, string][]).map(([v, l]) => (
-                  <SelectItem key={v} value={v}>{l}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <Input className="text-sm flex-1" placeholder="Label (optional)" value={docName}
-            onChange={(e) => setDocName(e.target.value)} disabled={uploading} />
-          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-            className="flex items-center gap-2 px-3 h-10 rounded-lg border border-dashed border-border hover:border-primary hover:bg-primary/5 text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 shrink-0">
-            {uploading ? <Loader2 className="size-4 animate-spin" /> : <FilePlus className="size-4" />}
-            {uploading ? 'Uploading…' : 'Choose file'}
-          </button>
-        </div>
-      </div>
-
-      {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
-      <p className="text-xs text-muted-foreground">PDF only · Registration papers, insurance, roadworthiness, or other documents</p>
-
-      <input ref={fileRef} type="file" accept="application/pdf" className="sr-only" onChange={handleFileChange} />
-
-      <div className="flex gap-3 pt-2 border-t border-border">
-        <Button type="button" variant="outline" onClick={onBack} disabled={uploading}><ArrowLeft className="size-4 mr-2" />Back</Button>
-        <Button type="button" onClick={() => onContinue(confirmed)} disabled={uploading}>
-          {confirmed.length === 0 ? 'Skip' : 'Continue'} <ArrowRight className="size-4 ml-2" />
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// ─── Step 4: Review & Publish ─────────────────────────────────────────────────
+// ─── Step 3: Review & Publish ─────────────────────────────────────────────────
 
 function Step4Review({ vehicle, onBack, onPublish }: {
   vehicle: Vehicle;
@@ -714,7 +604,7 @@ function Step4Review({ vehicle, onBack, onPublish }: {
 export default function AddVehiclePage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
 
   function handleStep1Complete(v: Vehicle) {
@@ -725,11 +615,6 @@ export default function AddVehiclePage() {
   function handleStep2Continue(photos: VehiclePhoto[]) {
     if (vehicle) setVehicle({ ...vehicle, photos });
     setStep(3);
-  }
-
-  function handleStep3Continue(docs: VehicleDocument[]) {
-    if (vehicle) setVehicle({ ...vehicle, documents: docs });
-    setStep(4);
   }
 
   async function handlePublish() {
@@ -769,18 +654,9 @@ export default function AddVehiclePage() {
           )}
 
           {step === 3 && vehicle && (
-            <Step3Documents
-              vehicleId={vehicle.id}
-              initialDocs={vehicle.documents ?? []}
-              onBack={() => setStep(2)}
-              onContinue={handleStep3Continue}
-            />
-          )}
-
-          {step === 4 && vehicle && (
             <Step4Review
               vehicle={vehicle}
-              onBack={() => setStep(3)}
+              onBack={() => setStep(2)}
               onPublish={handlePublish}
             />
           )}
