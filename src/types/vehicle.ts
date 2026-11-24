@@ -1,6 +1,7 @@
 import type { VehicleStatus } from './common';
 
 export type TransmissionType = 'AUTOMATIC' | 'MANUAL';
+export type BodyStyleType    = 'HARDTOP' | 'CONVERTIBLE';
 
 export interface VehiclePhoto {
   id: string;
@@ -27,6 +28,7 @@ export interface Vehicle {
   description: string;
   rentalTerms?: string;
   transmission: TransmissionType;
+  bodyStyle:    BodyStyleType | null;
   dailyRate: number;
   agreedPrice: number | null;
   state: string;
@@ -40,6 +42,8 @@ export interface Vehicle {
   ownerId?: string;
   ownerName?: string;
   ownerEmail?: string;
+  ownerProfileId?: string | null;
+  ownerOnboardingStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | null;
   createdAt: string;
   updatedAt: string;
 }

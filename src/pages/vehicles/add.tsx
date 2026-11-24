@@ -54,6 +54,7 @@ const schema = z.object({
   year:         z.number().int().min(1886).max(new Date().getFullYear()),
   category:     z.string().min(1, 'Select a category'),
   transmission: z.enum(['AUTOMATIC','MANUAL']),
+  bodyStyle:    z.enum(['HARDTOP','CONVERTIBLE'], 'Select a body style'),
   description:  z.string().min(10).max(2000),
   rentalTerms:  z.string().max(1000).optional(),
   dailyRate:    z.number().positive(),
@@ -194,6 +195,18 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
               <SelectContent>
                 <SelectItem value="AUTOMATIC">Automatic</SelectItem>
                 <SelectItem value="MANUAL">Manual</SelectItem>
+              </SelectContent>
+            </Select>
+          )} />
+        </Field>
+
+        <Field label="Body style" error={errors.bodyStyle?.message}>
+          <Controller name="bodyStyle" control={control} render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="w-full"><SelectValue placeholder="Select body style" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="HARDTOP">Hardtop</SelectItem>
+                <SelectItem value="CONVERTIBLE">Convertible</SelectItem>
               </SelectContent>
             </Select>
           )} />

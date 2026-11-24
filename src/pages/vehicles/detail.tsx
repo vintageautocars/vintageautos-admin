@@ -110,7 +110,13 @@ export default function VehicleDetailPage() {
             <TabsContent value="negotiation" className="mt-4">
               <Card>
                 <CardContent className="pt-6">
-                  <NegotiationPanel vehicleId={vehicle.id} vehicleStatus={vehicle.status} dailyRate={vehicle.dailyRate} />
+                  <NegotiationPanel
+                    vehicleId={vehicle.id}
+                    vehicleStatus={vehicle.status}
+                    dailyRate={vehicle.dailyRate}
+                    ownerProfileId={vehicle.ownerProfileId}
+                    ownerOnboardingStatus={vehicle.ownerOnboardingStatus}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>

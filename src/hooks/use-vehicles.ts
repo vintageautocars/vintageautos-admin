@@ -11,6 +11,7 @@ interface VehiclesFilter {
   status?: string;
   state?: string;
   category?: string;
+  bodyStyle?: string;
   isFeatured?: boolean;
   isAvailable?: boolean;
   search?: string;

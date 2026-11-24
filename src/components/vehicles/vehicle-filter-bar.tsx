@@ -24,12 +24,14 @@ interface VehicleFilterBarProps {
   status: string;
   state: string;
   category: string;
+  bodyStyle: string;
   featured: string;
   available: string;
   searchInput: string;
   onStatusChange: (v: string) => void;
   onStateChange: (v: string) => void;
   onCategoryChange: (v: string) => void;
+  onBodyStyleChange: (v: string) => void;
   onFeaturedChange: (v: string) => void;
   onAvailableChange: (v: string) => void;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -39,12 +41,14 @@ export function VehicleFilterBar({
   status,
   state,
   category,
+  bodyStyle,
   featured,
   available,
   searchInput,
   onStatusChange,
   onStateChange,
   onCategoryChange,
+  onBodyStyleChange,
   onFeaturedChange,
   onAvailableChange,
   onSearchChange,
@@ -102,6 +106,17 @@ export function VehicleFilterBar({
               {c.name}
             </SelectItem>
           ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={bodyStyle} onValueChange={onBodyStyleChange}>
+        <SelectTrigger className="w-[150px]">
+          <SelectValue placeholder="Body style" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="ALL">All styles</SelectItem>
+          <SelectItem value="HARDTOP">Hardtop</SelectItem>
+          <SelectItem value="CONVERTIBLE">Convertible</SelectItem>
         </SelectContent>
       </Select>
 

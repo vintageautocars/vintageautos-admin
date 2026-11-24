@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { Send, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Send, CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
+import { OwnerOnboardingApprovalModal } from './owner-onboarding-approval-modal';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -190,21 +191,32 @@ function MessageBubble({ message }: { message: Negotiation['messages'][number] }
 }
 
 interface NegotiationPanelProps {
-  vehicleId:    string;
-  vehicleStatus: string;
-  dailyRate:    number;
+  vehicleId:             string;
+  vehicleStatus:         string;
+  dailyRate:             number;
+  ownerProfileId?:       string | null;
+  ownerOnboardingStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | null;
 }
 
-export function NegotiationPanel({ vehicleId, vehicleStatus, dailyRate }: NegotiationPanelProps) {
+export function NegotiationPanel({
+  vehicleId,
+  vehicleStatus,
+  dailyRate,
+  ownerProfileId,
+  ownerOnboardingStatus,
+}: NegotiationPanelProps) {
   const { data: thread, isLoading, isError } = useNegotiation(vehicleId);
   const sendMutation    = useSendNegotiationMessage(vehicleId);
   const agreeMutation   = useAgreeTerms(vehicleId);
   const rejectMutation  = useRejectNegotiation(vehicleId);
 
-  const [message, setMessage]       = useState('');
-  const [agreeOpen, setAgreeOpen]   = useState(false);
-  const [rejectOpen, setRejectOpen] = useState(false);
+  const [message, setMessage]                 = useState('');
+  const [agreeOpen, setAgreeOpen]             = useState(false);
+  const [rejectOpen, setRejectOpen]           = useState(false);
+  const [onboardingGateOpen, setOnboardingGateOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const ownerIsApproved = ownerOnboardingStatus === 'APPROVED';
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -308,25 +320,39 @@ export function NegotiationPanel({ vehicleId, vehicleStatus, dailyRate }: Negoti
 
       {/* Admin actions — only on pending vehicles with open thread */}
       {isPending && !isClosed && (
-        <div className="flex gap-2 border-t border-[#FFFFFF1A] pt-4">
-          <Button
-            size="sm"
-            onClick={() => setAgreeOpen(true)}
-            disabled={agreeMutation.isPending}
-          >
-            <CheckCircle2 className="size-4" />
-            Agree Terms &amp; Approve
-          </Button>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => setRejectOpen(true)}
-            disabled={rejectMutation.isPending}
-          >
-            <XCircle className="size-4" />
-            Reject
-          </Button>
-        </div>
+        <>
+          {!ownerIsApproved && ownerProfileId && (
+            <div className="flex items-start gap-2 rounded-lg border border-yellow-500/30 bg-yellow-500/5 px-3 py-2.5 text-sm text-yellow-500">
+              <AlertCircle className="size-4 shrink-0 mt-0.5" />
+              <p>Owner onboarding not yet approved. Approve their details before actioning this listing.</p>
+            </div>
+          )}
+          <div className="flex gap-2 border-t border-[#FFFFFF1A] pt-4">
+            <Button
+              size="sm"
+              onClick={() => {
+                if (!ownerIsApproved && ownerProfileId) {
+                  setOnboardingGateOpen(true);
+                } else {
+                  setAgreeOpen(true);
+                }
+              }}
+              disabled={agreeMutation.isPending}
+            >
+              <CheckCircle2 className="size-4" />
+              Agree Terms &amp; Approve
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => setRejectOpen(true)}
+              disabled={rejectMutation.isPending}
+            >
+              <XCircle className="size-4" />
+              Reject
+            </Button>
+          </div>
+        </>
       )}
 
       <AgreeTermsModal
@@ -342,6 +368,15 @@ export function NegotiationPanel({ vehicleId, vehicleStatus, dailyRate }: Negoti
         isPending={rejectMutation.isPending}
         onConfirm={(reason) => rejectMutation.mutate(reason, { onSuccess: () => setRejectOpen(false) })}
       />
+      {ownerProfileId && (
+        <OwnerOnboardingApprovalModal
+          open={onboardingGateOpen}
+          onOpenChange={setOnboardingGateOpen}
+          ownerProfileId={ownerProfileId}
+          vehicleId={vehicleId}
+          onApproved={() => setAgreeOpen(true)}
+        />
+      )}
     </div>
   );
 }

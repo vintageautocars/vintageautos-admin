@@ -121,6 +121,7 @@ export default function VehiclesListPage() {
   const status = searchParams.get('status') ?? 'ALL';
   const state = searchParams.get('state') ?? 'ALL';
   const category = searchParams.get('category') ?? 'ALL';
+  const bodyStyle = searchParams.get('bodyStyle') ?? 'ALL';
   const featured = searchParams.get('featured') ?? 'ALL';
   const available = searchParams.get('available') ?? 'ALL';
 
@@ -160,6 +161,7 @@ export default function VehiclesListPage() {
     status: status === 'ALL' ? undefined : status,
     state: state === 'ALL' ? undefined : state,
     category: category === 'ALL' ? undefined : category,
+    bodyStyle: bodyStyle === 'ALL' ? undefined : bodyStyle,
     isFeatured: featured === 'ALL' ? undefined : featured === 'true',
     isAvailable: available === 'ALL' ? undefined : available === 'true',
     search: search || undefined,
@@ -259,12 +261,14 @@ export default function VehiclesListPage() {
         status={status}
         state={state}
         category={category}
+        bodyStyle={bodyStyle}
         featured={featured}
         available={available}
         searchInput={searchInput}
         onStatusChange={(v) => setParam('status', v)}
         onStateChange={(v) => setParam('state', v)}
         onCategoryChange={(v) => setParam('category', v)}
+        onBodyStyleChange={(v) => setParam('bodyStyle', v)}
         onFeaturedChange={(v) => setParam('featured', v)}
         onAvailableChange={(v) => setParam('available', v)}
         onSearchChange={handleSearchChange}

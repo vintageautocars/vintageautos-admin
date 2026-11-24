@@ -31,7 +31,7 @@ function LeftPanel() {
       <div className="relative p-10 flex flex-col">
         <span className="font-heading text-lg font-semibold leading-tight">
           <span className="text-primary">Vintage Cars</span>
-          <span className="text-white"> of Lagos</span>
+          <span className="text-white"> of Nigeria</span>
         </span>
         <span className="mt-0.5 text-xs font-medium uppercase tracking-widest text-white/45">
           Admin
@@ -63,7 +63,7 @@ function LeftPanel() {
 
       {/* Footer */}
       <p className="relative p-10 text-xs text-white/30">
-        &copy; {new Date().getFullYear()} Vintage Cars of Lagos
+        &copy; {new Date().getFullYear()} Vintage Cars of Nigeria
       </p>
     </div>
   );
@@ -120,7 +120,7 @@ export default function LoginPage() {
           <div className="flex flex-col lg:hidden">
             <span className="font-heading text-lg font-semibold leading-tight">
               <span className="text-primary">Vintage Cars</span>
-              <span className="text-foreground"> of Lagos</span>
+              <span className="text-foreground"> of Nigeria</span>
             </span>
             <span className="mt-0.5 text-xs font-medium uppercase tracking-widest text-muted-foreground">
               Admin
