@@ -636,7 +636,8 @@ function Step4Review({ vehicle, onBack, onPublish }: {
   onPublish: () => Promise<void>;
 }) {
   const [publishing, setPublishing] = useState(false);
-  const primaryPhoto = vehicle.photos.find((p) => p.isPrimary) ?? vehicle.photos[0];
+  const photos = vehicle.photos ?? [];
+  const primaryPhoto = photos.find((p) => p.isPrimary) ?? photos[0];
   const formattedRate = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(vehicle.dailyRate);
 
   async function handlePublish() {
@@ -670,7 +671,7 @@ function Step4Review({ vehicle, onBack, onPublish }: {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Photos</p>
-              <p className="font-medium">{vehicle.photos.length} uploaded</p>
+              <p className="font-medium">{photos.length} uploaded</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Documents</p>
@@ -686,9 +687,9 @@ function Step4Review({ vehicle, onBack, onPublish }: {
         </div>
       </div>
 
-      {vehicle.photos.length > 1 && (
+      {photos.length > 1 && (
         <div className="grid grid-cols-5 gap-2">
-          {vehicle.photos.slice(0, 10).map((p) => (
+          {photos.slice(0, 10).map((p) => (
             <div key={p.id} className="aspect-square rounded-lg overflow-hidden bg-muted">
               <img src={p.url} alt="" className="size-full object-cover" />
             </div>
@@ -761,7 +762,7 @@ export default function AddVehiclePage() {
           {step === 2 && vehicle && (
             <Step2Photos
               vehicleId={vehicle.id}
-              initialPhotos={vehicle.photos}
+              initialPhotos={vehicle.photos ?? []}
               onBack={() => setStep(1)}
               onContinue={handleStep2Continue}
             />
