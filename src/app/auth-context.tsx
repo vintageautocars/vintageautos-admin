@@ -1,3 +1,7 @@
+// Auth context — exports both the provider component and the useAuth hook.
+/* eslint-disable react-refresh/only-export-components */
+/* oxlint-disable react/only-export-components */
+
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';

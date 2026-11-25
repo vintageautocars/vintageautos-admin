@@ -440,8 +440,13 @@ export default function CarCatalogSettingsPage() {
 
   const q = useDebounce(rawSearch.trim(), 300);
 
-  // Reset to page 1 when filters change
-  useEffect(() => { setPage(1); }, [q, filterMakeId]);
+  // Reset to page 1 when filters change — track previous values during render.
+  // https://react.dev/reference/react/useState#storing-information-from-previous-renders
+  const [prevFilters, setPrevFilters] = useState({ q, filterMakeId });
+  if (prevFilters.q !== q || prevFilters.filterMakeId !== filterMakeId) {
+    setPrevFilters({ q, filterMakeId });
+    setPage(1);
+  }
 
   const { data, isFetching, isError, refetch } = useModelsPaginated({
     q:      q || undefined,

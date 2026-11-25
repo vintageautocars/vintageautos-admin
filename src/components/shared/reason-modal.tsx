@@ -50,6 +50,7 @@ export function ReasonModal({
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
+  // oxlint-disable-next-line react/incompatible-library -- react-hook-form watch() is standard
   const reason = watch('reason', '');
 
   useEffect(() => {

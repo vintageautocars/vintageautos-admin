@@ -1,3 +1,7 @@
+// Exports both the filter component and shared filter-state types/helpers.
+/* eslint-disable react-refresh/only-export-components */
+/* oxlint-disable react/only-export-components */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';

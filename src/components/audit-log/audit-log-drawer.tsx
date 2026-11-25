@@ -1,3 +1,7 @@
+// Exports both the drawer component and helper utilities used elsewhere.
+/* eslint-disable react-refresh/only-export-components */
+/* oxlint-disable react/only-export-components */
+
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { formatDate } from '@/lib/utils';
 import {

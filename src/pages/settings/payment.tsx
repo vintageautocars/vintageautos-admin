@@ -244,15 +244,14 @@ export default function PaymentSettingsPage() {
   const [rateLimitedUntil, setRateLimitedUntil] = useState<number | null>(null);
   const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const isRateLimited = rateLimitedUntil !== null && Date.now() < rateLimitedUntil;
+  // rateLimitedUntil is cleared via setTimeout after 5 minutes, so presence
+  // alone is sufficient to know we're still in the cooldown window.
+  const isRateLimited = rateLimitedUntil !== null;
 
   // Countdown display for the banner
   const [cooldownSecondsLeft, setCooldownSecondsLeft] = useState(0);
   useEffect(() => {
-    if (!isRateLimited) {
-      setCooldownSecondsLeft(0);
-      return;
-    }
+    if (!isRateLimited) return;
     const tick = () => {
       const left = Math.ceil(((rateLimitedUntil ?? 0) - Date.now()) / 1000);
       setCooldownSecondsLeft(Math.max(left, 0));

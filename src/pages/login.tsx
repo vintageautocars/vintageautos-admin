@@ -13,6 +13,8 @@ const FEATURES = [
   { icon: ShieldCheck,     label: 'Manage approvals, users and access' },
 ] as const;
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 function LeftPanel() {
   return (
     <div className="hidden lg:flex lg:flex-col lg:justify-between h-full relative overflow-hidden">
@@ -63,7 +65,7 @@ function LeftPanel() {
 
       {/* Footer */}
       <p className="relative p-10 text-xs text-white/30">
-        &copy; {new Date().getFullYear()} Vintage Cars of Nigeria
+        &copy; {CURRENT_YEAR} Vintage Cars of Nigeria
       </p>
     </div>
   );

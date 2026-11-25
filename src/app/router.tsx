@@ -1,3 +1,8 @@
+// Router config file — the inline NotFoundPage component lives alongside the
+// exported router instance.
+/* eslint-disable react-refresh/only-export-components */
+/* oxlint-disable react/only-export-components */
+
 import { createBrowserRouter } from 'react-router';
 import { AdminRoute } from './guards';
 import { AppLayout } from '@/components/shared/app-layout';

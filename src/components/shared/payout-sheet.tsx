@@ -40,6 +40,7 @@ export function PayoutSheet({ open, onOpenChange, bookingId, isLoading, onConfir
   const { data: details, isLoading: detailsLoading, isError } = useOwnerPayoutDetails(bookingId, open);
 
   const { register, handleSubmit, reset, watch } = useForm<FormValues>({ defaultValues: { notes: '' } });
+  // oxlint-disable-next-line react/incompatible-library -- react-hook-form watch() is standard
   const notes = watch('notes', '');
 
   useEffect(() => {

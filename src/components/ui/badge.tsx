@@ -1,3 +1,7 @@
+// shadcn component — exports both the component and its variants config.
+/* eslint-disable react-refresh/only-export-components */
+/* oxlint-disable react/only-export-components */
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"

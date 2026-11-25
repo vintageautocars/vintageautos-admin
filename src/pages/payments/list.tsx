@@ -134,6 +134,7 @@ function PaymentFilterBar({
 // ─── Shared columns ───────────────────────────────────────────────────────────
 
 function buildColumns(onRowClick: (row: Payment) => void): Column<Payment>[] {
+  void onRowClick; // used by parent onClick, not column render
   return [
     {
       key: 'reference',
@@ -202,7 +203,6 @@ function buildColumns(onRowClick: (row: Payment) => void): Column<Payment>[] {
       ),
     },
   ];
-  void onRowClick; // used by parent onClick, not column render
 }
 
 // ─── Awaiting verification tab ────────────────────────────────────────────────
