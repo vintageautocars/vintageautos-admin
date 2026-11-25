@@ -10,6 +10,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Logo } from './logo';
 import { SidebarNav } from './sidebar-nav';
+import { NotificationToggle } from './notification-toggle';
 import { useAuth } from '@/app/auth-context';
 
 function initials(first: string, last: string) {
@@ -28,10 +29,13 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <SidebarNav onNavigate={onNavigate} />
       </div>
       <Separator className="bg-[#FFFFFF1A]" />
+      <div className="mx-3 mt-2">
+        <NotificationToggle />
+      </div>
       <button
         type="button"
         onClick={() => void logout()}
-        className="flex items-center gap-3 mx-3 my-4 px-3 py-2.5 rounded-md text-sm font-medium text-[var(--color-gray-text)] hover:text-white hover:bg-white/5 transition-colors"
+        className="flex items-center gap-3 mx-3 mb-4 px-3 py-2.5 rounded-md text-sm font-medium text-[var(--color-gray-text)] hover:text-white hover:bg-white/5 transition-colors"
       >
         <LogOut className="size-5" />
         <span>Log out</span>
