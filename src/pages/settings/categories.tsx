@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GripVertical, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
@@ -37,6 +37,10 @@ function CategoryDialog({
 
   const isPending = createMutation.isPending || updateMutation.isPending;
   const isEdit = editing !== null;
+
+  useEffect(() => {
+    if (open) setName(editing?.name ?? '');
+  }, [open, editing]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
