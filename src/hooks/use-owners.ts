@@ -42,7 +42,7 @@ export function useApproveOwner() {
     mutationFn: (id: string) => api.patch(`/onboarding/admin/applications/${id}/approve`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ownerKeys.all });
-      toast.success('Owner application approved.');
+      toast.success('Partner application approved.');
     },
     onError: () => toast.error('Failed to approve application.'),
   });
@@ -55,7 +55,7 @@ export function useRejectOwner() {
       api.patch(`/onboarding/admin/applications/${id}/reject`, { reason }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ownerKeys.all });
-      toast.success('Owner application rejected.');
+      toast.success('Partner application rejected.');
     },
     onError: () => toast.error('Failed to reject application.'),
   });

@@ -18,6 +18,13 @@ import type { AuditLog } from '@/types/audit-log';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+const ROLE_DISPLAY: Record<string, string> = {
+  SUPER_ADMIN: 'Super Admin',
+  ADMIN:       'Admin',
+  OWNER:       'Partner',
+  CUSTOMER:    'Client',
+};
+
 function rolePill(role: string) {
   const isSuperAdmin = role === 'SUPER_ADMIN';
   return (
@@ -30,7 +37,7 @@ function rolePill(role: string) {
           : 'bg-muted text-muted-foreground border-white/10',
       ].join(' ')}
     >
-      {role.replace('_', ' ')}
+      {ROLE_DISPLAY[role] ?? role.replace('_', ' ')}
     </span>
   );
 }

@@ -49,7 +49,7 @@ function RequestRow({ request }: { request: BankDetailChangeRequest }) {
             {/* Owner + date */}
             <div className="flex flex-col gap-1 min-w-0">
               <span className="font-semibold text-foreground truncate">
-                {request.ownerName || 'Unknown Owner'}
+                {request.ownerName || 'Unknown Partner'}
               </span>
               <span className="text-xs text-muted-foreground">
                 Submitted {formatDate(request.createdAt)}
@@ -111,7 +111,7 @@ function RequestRow({ request }: { request: BankDetailChangeRequest }) {
         open={approveOpen}
         onOpenChange={setApproveOpen}
         title="Approve Bank Detail Change"
-        description="Are you sure you want to approve this change? The owner's bank details will be updated immediately."
+        description="Are you sure you want to approve this change? The partner's bank details will be updated immediately."
         confirmLabel="Approve"
         isLoading={approve.isPending}
         onConfirm={handleApprove}
@@ -138,7 +138,7 @@ export default function BankRequestsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Bank Detail Requests"
-        subtitle="Review and approve owner bank account update requests."
+        subtitle="Review and approve partner bank account update requests."
       />
 
       {isLoading && (

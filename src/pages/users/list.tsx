@@ -22,8 +22,8 @@ const ROLE_OPTIONS: Array<{ value: UserRole | 'ALL'; label: string }> = [
   { value: 'ALL',         label: 'All roles' },
   { value: 'SUPER_ADMIN', label: 'Super Admin' },
   { value: 'ADMIN',       label: 'Admin' },
-  { value: 'OWNER',       label: 'Owner' },
-  { value: 'CUSTOMER',    label: 'Customer' },
+  { value: 'OWNER',       label: 'Partner' },
+  { value: 'CUSTOMER',    label: 'Client' },
 ];
 
 const ACTIVE_OPTIONS = [
@@ -42,8 +42,8 @@ const ROLE_COLOURS: Record<UserRole, string> = {
 const ROLE_LABELS: Record<UserRole, string> = {
   SUPER_ADMIN: 'Super Admin',
   ADMIN:       'Admin',
-  OWNER:       'Owner',
-  CUSTOMER:    'Customer',
+  OWNER:       'Partner',
+  CUSTOMER:    'Client',
 };
 
 function RolePills({ roles }: { roles: UserRole[] }) {

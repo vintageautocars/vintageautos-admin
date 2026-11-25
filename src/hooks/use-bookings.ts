@@ -95,9 +95,9 @@ export function useRecordOwnerPayout() {
     onSuccess: (_data, { id }) => {
       qc.invalidateQueries({ queryKey: bookingKeys.all });
       qc.invalidateQueries({ queryKey: bookingKeys.detail(id) });
-      toast.success('Owner payout recorded.');
+      toast.success('Partner payout recorded.');
     },
-    onError: () => toast.error('Failed to record owner payout.'),
+    onError: () => toast.error('Failed to record partner payout.'),
   });
 }
 

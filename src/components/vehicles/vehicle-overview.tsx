@@ -56,14 +56,14 @@ export function VehicleOverview({ vehicle }: VehicleOverviewProps) {
 
       {/* Right column */}
       <div className="flex flex-col gap-4">
-        <DetailRow label="Owner (internal)">{vehicle.ownerName ?? '—'}</DetailRow>
+        <DetailRow label="Partner (internal)">{vehicle.ownerName ?? '—'}</DetailRow>
         {vehicle.ownerId && (
-          <DetailRow label="Owner Profile">
+          <DetailRow label="Partner Profile">
             <Link
               to={`/owners/${vehicle.ownerId}`}
               className="text-primary underline-offset-3 hover:underline"
             >
-              View Owner
+              View Partner
             </Link>
           </DetailRow>
         )}

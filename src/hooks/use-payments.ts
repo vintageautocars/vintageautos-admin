@@ -60,7 +60,7 @@ export function useRejectPayment() {
     onSuccess: (_data, { id }) => {
       qc.invalidateQueries({ queryKey: paymentKeys.all });
       qc.invalidateQueries({ queryKey: paymentKeys.detail(id) });
-      toast.success('Payment rejected — customer notified.');
+      toast.success('Payment rejected — client notified.');
     },
     onError: () => toast.error('Failed to reject payment.'),
   });

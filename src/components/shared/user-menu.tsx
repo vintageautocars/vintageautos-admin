@@ -15,6 +15,8 @@ import type { User } from '@/types/auth';
 function roleBadgeLabel(user: User) {
   if (user.roles.includes('SUPER_ADMIN')) return 'Super Admin';
   if (user.roles.includes('ADMIN')) return 'Admin';
+  if (user.roles.includes('OWNER')) return 'Partner';
+  if (user.roles.includes('CUSTOMER')) return 'Client';
   return user.roles[0] ?? '';
 }
 

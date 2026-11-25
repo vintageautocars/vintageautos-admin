@@ -113,7 +113,7 @@ export function OwnerCombobox({ value, onChange, disabled }: Props) {
             )}
             {ownersFetching && search.length > 0 && (
               <div className="flex items-center justify-center gap-2 py-4 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Searching owners…
+                <Loader2 className="h-4 w-4 animate-spin" /> Searching partners…
               </div>
             )}
             {!adminsFetching && admins.length > 0 && (
@@ -136,7 +136,7 @@ export function OwnerCombobox({ value, onChange, disabled }: Props) {
             )}
             {!ownersFetching && admins.length > 0 && owners.length > 0 && <CommandSeparator />}
             {!ownersFetching && owners.length > 0 && (
-              <CommandGroup heading="Vehicle Owners">
+              <CommandGroup heading="Partners">
                 {owners.map((o) => {
                   const label = o.user ? `${o.user.firstName} ${o.user.lastName}` : o.userId;
                   return (

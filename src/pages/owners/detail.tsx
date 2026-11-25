@@ -104,7 +104,7 @@ export default function OwnerDetailPage() {
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Owner Applications
+          Partner Applications
         </Link>
       </div>
 
@@ -121,7 +121,7 @@ export default function OwnerDetailPage() {
 
       {isError && !isLoading && (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <p className="text-sm text-muted-foreground">Failed to load owner application details.</p>
+          <p className="text-sm text-muted-foreground">Failed to load partner application details.</p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             Retry
           </Button>
@@ -130,7 +130,7 @@ export default function OwnerDetailPage() {
 
       {!isLoading && !isError && !owner && (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <p className="text-sm text-muted-foreground">Owner application not found.</p>
+          <p className="text-sm text-muted-foreground">Partner application not found.</p>
           <Link to="/owners">
             <Button variant="outline" size="sm">Back to applications</Button>
           </Link>

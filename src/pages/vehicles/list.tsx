@@ -201,7 +201,7 @@ export default function VehiclesListPage() {
     },
     {
       key: 'owner',
-      header: 'Owner',
+      header: 'Partner',
       render: (row) => <OwnerCell row={row} />,
     },
     {

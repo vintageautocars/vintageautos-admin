@@ -18,7 +18,7 @@ export function RecentBookingsTable({ bookings, isLoading }: Props) {
         <TableRow className="border-[#FFFFFF1A] hover:bg-transparent">
           <TableHead className="text-[var(--color-gray-text)] font-medium text-xs uppercase tracking-wide">ID</TableHead>
           <TableHead className="text-[var(--color-gray-text)] font-medium text-xs uppercase tracking-wide">Vehicle</TableHead>
-          <TableHead className="text-[var(--color-gray-text)] font-medium text-xs uppercase tracking-wide hidden sm:table-cell">Customer</TableHead>
+          <TableHead className="text-[var(--color-gray-text)] font-medium text-xs uppercase tracking-wide hidden sm:table-cell">Client</TableHead>
           <TableHead className="text-[var(--color-gray-text)] font-medium text-xs uppercase tracking-wide hidden md:table-cell">Dates</TableHead>
           <TableHead className="text-[var(--color-gray-text)] font-medium text-xs uppercase tracking-wide text-right">Amount</TableHead>
           <TableHead className="text-[var(--color-gray-text)] font-medium text-xs uppercase tracking-wide">Status</TableHead>

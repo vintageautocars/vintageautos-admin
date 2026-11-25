@@ -17,8 +17,8 @@ import { useNavigate } from 'react-router';
 const ROLE_LABELS: Record<UserRole, string> = {
   SUPER_ADMIN: 'Super Admin',
   ADMIN:       'Admin',
-  OWNER:       'Vehicle Owner',
-  CUSTOMER:    'Customer',
+  OWNER:       'Partner',
+  CUSTOMER:    'Client',
 };
 
 function RoleBadge({ role }: { role: UserRole }) {

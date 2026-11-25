@@ -69,7 +69,7 @@ export function OwnerActions({ ownerId, status, rejectedReason }: OwnerActionsPr
         open={approveOpen}
         onOpenChange={setApproveOpen}
         title="Approve Application"
-        description="Are you sure you want to approve this owner application? The owner will be notified and will be able to list vehicles."
+        description="Are you sure you want to approve this partner application? The partner will be notified and will be able to list vehicles."
         confirmLabel="Approve"
         variant="default"
         isLoading={approveMutation.isPending}
@@ -87,7 +87,7 @@ export function OwnerActions({ ownerId, status, rejectedReason }: OwnerActionsPr
         open={rejectOpen}
         onOpenChange={setRejectOpen}
         title="Reject Application"
-        description="Please provide a reason for rejecting this owner application. The applicant will be notified."
+        description="Please provide a reason for rejecting this partner application. The applicant will be notified."
         placeholder="e.g. Incomplete documentation, invalid KYC details…"
         confirmLabel="Reject Application"
         isLoading={rejectMutation.isPending}

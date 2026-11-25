@@ -143,7 +143,7 @@ export default function OwnersListPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Owner Applications"
+        title="Partner Applications"
         action={
           pendingCount > 0 ? (
             <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-transparent">

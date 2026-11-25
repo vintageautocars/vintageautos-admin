@@ -53,7 +53,7 @@ const ACTION_GROUPS: { group: string; actions: string[] }[] = [
     ],
   },
   {
-    group: 'Owner Applications',
+    group: 'Partner Applications',
     actions: [
       AUDIT_ACTIONS.OWNER_APPLICATION_APPROVED,
       AUDIT_ACTIONS.OWNER_APPLICATION_REJECTED,
@@ -116,6 +116,13 @@ function ActionPill({ action }: { action: string }) {
   );
 }
 
+const ROLE_DISPLAY: Record<string, string> = {
+  SUPER_ADMIN: 'Super Admin',
+  ADMIN:       'Admin',
+  OWNER:       'Partner',
+  CUSTOMER:    'Client',
+};
+
 function RolePill({ role }: { role: string }) {
   const isSuperAdmin = role === 'SUPER_ADMIN';
   return (
@@ -127,7 +134,7 @@ function RolePill({ role }: { role: string }) {
           : 'bg-muted text-muted-foreground border-white/10',
       ].join(' ')}
     >
-      {role.replace('_', ' ')}
+      {ROLE_DISPLAY[role] ?? role.replace('_', ' ')}
     </span>
   );
 }

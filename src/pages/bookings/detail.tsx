@@ -104,7 +104,7 @@ export default function BookingDetailPage() {
                       </Link>
                     </DetailRow>
 
-                    <DetailRow label="Customer (internal)">
+                    <DetailRow label="Client (internal)">
                       <span>{booking.customerName}</span>
                       {booking.customerEmail && (
                         <span className="block text-xs text-muted-foreground">
@@ -136,18 +136,22 @@ export default function BookingDetailPage() {
                     </DetailRow>
                     <DetailRow label="Created">{formatDate(booking.createdAt)}</DetailRow>
                     <DetailRow label="Last Updated">{formatDate(booking.updatedAt)}</DetailRow>
-                    <DetailRow label="Owner Payout">
-                      {booking.ownerPaidAt ? (
-                        <span className="inline-flex items-center gap-1 text-teal-700">
-                          <CheckCircle2 className="size-3.5" />
-                          Paid on {formatDate(booking.ownerPaidAt)}
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground">Not yet recorded</span>
-                      )}
-                    </DetailRow>
-                    {booking.ownerPaymentNotes && (
-                      <DetailRow label="Payout Notes">{booking.ownerPaymentNotes}</DetailRow>
+                    {booking.vehicleOwnerRoles.includes('OWNER') && (
+                      <>
+                        <DetailRow label="Partner Payout">
+                          {booking.ownerPaidAt ? (
+                            <span className="inline-flex items-center gap-1 text-teal-700">
+                              <CheckCircle2 className="size-3.5" />
+                              Paid on {formatDate(booking.ownerPaidAt)}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">Not yet recorded</span>
+                          )}
+                        </DetailRow>
+                        {booking.ownerPaymentNotes && (
+                          <DetailRow label="Payout Notes">{booking.ownerPaymentNotes}</DetailRow>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -188,6 +192,7 @@ export default function BookingDetailPage() {
                   status={booking.status}
                   paymentStatus={booking.payment?.status}
                   ownerPaidAt={booking.ownerPaidAt}
+                  vehicleOwnerRoles={booking.vehicleOwnerRoles}
                 />
               </CardContent>
             </Card>

@@ -141,7 +141,7 @@ export function UserBookingSheet({ booking, open, onOpenChange }: UserBookingShe
               <>
                 <Separator />
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Owner payout</p>
+                  <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Partner payout</p>
                   <div className="divide-y divide-border/60">
                     <InfoRow label="Paid at" value={formatDate(booking.ownerPaidAt)} />
                     {booking.ownerPaymentNotes && (

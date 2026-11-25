@@ -68,19 +68,19 @@ function AgreeTermsModal({
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-2">
           {/* Owner's asking price — reference context */}
           <div className="rounded-lg border border-[#FFFFFF1A] bg-white/5 px-4 py-3 flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Owner's asking price</span>
+            <span className="text-sm text-muted-foreground">Partner's asking price</span>
             <span className="text-sm font-semibold text-foreground">
-              ₦{askingPrice.toLocaleString('en-NG')}<span className="text-xs font-normal text-muted-foreground">/day</span>
+              ₦{askingPrice.toLocaleString('en-NG')}<span className="text-xs font-normal text-muted-foreground">/slot</span>
             </span>
           </div>
 
           <p className="text-sm text-muted-foreground">
-            Set the final agreed payout to the owner and the rental price customers will see.
+            Set the final agreed payout to the partner and the rental price clients will see.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="agreed-price">Owner Payout / Day (₦)</Label>
+              <Label htmlFor="agreed-price">Partner Payout / Slot (₦)</Label>
               <Input
                 id="agreed-price"
                 type="number"
@@ -93,7 +93,7 @@ function AgreeTermsModal({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="rental-price">Rental Price / Day (₦)</Label>
+              <Label htmlFor="rental-price">Rental Price / Slot (₦)</Label>
               <Input
                 id="rental-price"
                 type="number"
@@ -142,7 +142,7 @@ function RejectModal({
         </DialogHeader>
         <div className="flex flex-col gap-4 py-2">
           <p className="text-sm text-muted-foreground">
-            Provide a reason for rejecting this vehicle. The owner will be notified by email.
+            Provide a reason for rejecting this vehicle. The partner will be notified by email.
           </p>
           <Textarea
             placeholder="e.g. Vehicle photos are insufficient, pricing terms not agreed…"
@@ -183,7 +183,7 @@ function MessageBubble({ message }: { message: Negotiation['messages'][number] }
         {message.body}
       </div>
       <span className="text-[11px] text-muted-foreground">
-        {isAdmin ? `Admin · ${name}` : `Owner · ${name}`} · {formatDate(message.createdAt)}
+        {isAdmin ? `Admin · ${name}` : `Partner · ${name}`} · {formatDate(message.createdAt)}
       </span>
     </div>
   );
@@ -248,7 +248,7 @@ export function NegotiationPanel({
         <div className="flex flex-col gap-0.5">
           <p className="text-sm font-medium text-foreground">Price Negotiation</p>
           <p className="text-xs text-muted-foreground">
-            Discussion between admin team and vehicle owner on listing price.
+            Discussion between admin team and partner on listing price.
           </p>
         </div>
         <StatusChip status={thread.status} />
@@ -259,8 +259,8 @@ export function NegotiationPanel({
         <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 flex flex-col gap-1">
           <p className="text-xs font-semibold uppercase tracking-wide text-primary">Agreed Terms</p>
           <div className="flex gap-6 text-sm">
-            <span className="text-muted-foreground">Owner payout: <strong className="text-foreground">₦{Number(thread.agreedPrice).toLocaleString('en-NG')}/day</strong></span>
-            <span className="text-muted-foreground">Rental price: <strong className="text-foreground">₦{Number(thread.rentalPrice).toLocaleString('en-NG')}/day</strong></span>
+            <span className="text-muted-foreground">Partner payout: <strong className="text-foreground">₦{Number(thread.agreedPrice).toLocaleString('en-NG')}/slot</strong></span>
+            <span className="text-muted-foreground">Rental price: <strong className="text-foreground">₦{Number(thread.rentalPrice).toLocaleString('en-NG')}/slot</strong></span>
           </div>
         </div>
       )}
@@ -269,7 +269,7 @@ export function NegotiationPanel({
       <div className="flex flex-col gap-3 max-h-80 overflow-y-auto rounded-lg border border-[#FFFFFF1A] bg-[var(--color-card-background)] p-3">
         {thread.messages.length === 0 ? (
           <p className="text-center text-sm text-muted-foreground py-4">
-            No messages yet. Start the conversation with the vehicle owner.
+            No messages yet. Start the conversation with the partner.
           </p>
         ) : (
           thread.messages.map(msg => (

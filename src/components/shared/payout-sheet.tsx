@@ -57,16 +57,16 @@ export function PayoutSheet({ open, onOpenChange, bookingId, isLoading, onConfir
         <SheetHeader className="border-b px-6 py-5">
           <SheetTitle className="flex items-center gap-2">
             <Banknote className="size-5 text-amber-600" />
-            Record Owner Payout
+            Record Partner Payout
           </SheetTitle>
           <SheetDescription>
-            Verify the owner's bank details below before confirming that payment has been made.
+            Verify the partner's bank details below before confirming that payment has been made.
           </SheetDescription>
         </SheetHeader>
 
         <div className="flex flex-col gap-4 px-6 py-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Owner Bank Details
+            Partner Bank Details
           </p>
 
           {detailsLoading && (
@@ -80,13 +80,13 @@ export function PayoutSheet({ open, onOpenChange, bookingId, isLoading, onConfir
           {isError && !detailsLoading && (
             <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
               <AlertCircle className="size-4 shrink-0" />
-              Could not load owner bank details. Please try again.
+              Could not load partner bank details. Please try again.
             </div>
           )}
 
           {details && (
             <div className="flex flex-col divide-y rounded-lg border bg-muted/40">
-              <div className="px-4 py-3"><DetailRow label="Owner Name"     value={details.ownerName} /></div>
+              <div className="px-4 py-3"><DetailRow label="Partner Name"   value={details.ownerName} /></div>
               <div className="px-4 py-3"><DetailRow label="Bank Name"      value={details.bankName} /></div>
               <div className="px-4 py-3"><DetailRow label="Account Name"   value={details.accountName} /></div>
               <div className="px-4 py-3"><DetailRow label="Account Number" value={details.accountNumber} /></div>

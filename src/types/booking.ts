@@ -40,6 +40,7 @@ export interface Booking {
   cancelReason: string | null;
   ownerPaidAt: string | null;
   ownerPaymentNotes: string | null;
+  vehicleOwnerRoles: string[];
   payment?: BookingPaymentSummary | null;
   createdAt: string;
   updatedAt: string;

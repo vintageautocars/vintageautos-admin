@@ -23,7 +23,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6 max-w-[1400px] mx-auto w-full">
       <PageHeader
         title="Overview"
-        subtitle="Platform-wide snapshot of vehicles, bookings and owners."
+        subtitle="Platform-wide snapshot of vehicles, bookings and partners."
       />
 
       {/* KPI grid — 8 cards, 2 cols on mobile, 4 on desktop */}
@@ -43,7 +43,7 @@ export default function DashboardPage() {
           <StatCard label="Approved vehicles" value={stats?.vehicles.approved ?? '—'} hint="Live on platform" icon={CheckCircle2} accent="default" href="/vehicles?status=APPROVED" isLoading={isLoading} />
         </motion.div>
         <motion.div variants={item}>
-          <StatCard label="Owner applications" value={stats?.owners.total ?? '—'} hint={`${stats?.owners.pending ?? 0} pending`} icon={Users} accent="blue" href="/owners" isLoading={isLoading} />
+          <StatCard label="Partner applications" value={stats?.owners.total ?? '—'} hint={`${stats?.owners.pending ?? 0} pending`} icon={Users} accent="blue" href="/owners" isLoading={isLoading} />
         </motion.div>
         <motion.div variants={item}>
           <StatCard label="Total bookings" value={stats?.bookings.total ?? '—'} hint={`${stats?.bookings.active ?? 0} active now`} icon={CalendarCheck} href="/bookings" isLoading={isLoading} />
@@ -55,7 +55,7 @@ export default function DashboardPage() {
           <StatCard label="Completed" value={stats?.bookings.completed ?? '—'} hint="All time" icon={CheckCircle2} accent="default" href="/bookings?status=COMPLETED" isLoading={isLoading} />
         </motion.div>
         <motion.div variants={item}>
-          <StatCard label="Customers" value={stats?.customers.total ?? '—'} hint="Registered accounts" icon={UserCheck} accent="blue" isLoading={isLoading} />
+          <StatCard label="Clients" value={stats?.customers.total ?? '—'} hint="Registered accounts" icon={UserCheck} accent="blue" isLoading={isLoading} />
         </motion.div>
       </motion.div>
 
@@ -108,7 +108,7 @@ export default function DashboardPage() {
           {/* Pending owner applications */}
           <Card className="bg-[var(--color-card-background)] border-[#FFFFFF1A]">
             <CardHeader className="flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-base font-semibold text-foreground">Owner applications</CardTitle>
+              <CardTitle className="text-base font-semibold text-foreground">Partner applications</CardTitle>
               <Button variant="ghost" size="sm" asChild className="text-[var(--color-gray-text)] hover:text-foreground">
                 <Link to="/owners?status=PENDING">View all <ArrowRight className="size-3.5 ml-1" /></Link>
               </Button>

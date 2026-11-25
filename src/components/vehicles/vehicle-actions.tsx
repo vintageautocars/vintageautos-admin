@@ -54,7 +54,7 @@ export function VehicleActions({ vehicle }: VehicleActionsProps) {
           <AlertCircle className="size-4 text-yellow-400" />
           <AlertTitle className="text-yellow-400">Pending Price Negotiation</AlertTitle>
           <AlertDescription className="text-muted-foreground">
-            Use the <strong>Negotiation</strong> tab to discuss pricing with the owner, then agree terms to approve or reject.
+            Use the <strong>Negotiation</strong> tab to discuss pricing with the partner, then agree terms to approve or reject.
           </AlertDescription>
         </Alert>
       )}

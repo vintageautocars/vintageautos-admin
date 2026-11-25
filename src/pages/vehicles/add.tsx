@@ -42,7 +42,7 @@ const NIGERIA_STATES = [
 // ─── Validation ───────────────────────────────────────────────────────────────
 
 const schema = z.object({
-  ownerId:      z.string().min(1, 'Select an owner'),
+  ownerId:      z.string().min(1, 'Select a partner'),
   name:         z.string().min(1).max(100),
   make:         z.string().min(1).max(60),
   model:        z.string().min(1).max(60),
@@ -223,7 +223,7 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <Field label="Owner" error={errors.ownerId?.message}>
+      <Field label="Partner" error={errors.ownerId?.message}>
         <Controller name="ownerId" control={control} render={({ field }) => (
           <OwnerCombobox value={field.value} onChange={field.onChange} />
         )} />
@@ -595,7 +595,7 @@ export default function AddVehiclePage() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Add Vehicle"
-        subtitle="Register a new vehicle on behalf of an owner"
+        subtitle="Register a new vehicle on behalf of a partner"
         action={
           <Button variant="outline" size="sm" onClick={() => navigate('/vehicles')}>
             <ArrowLeft className="size-4 mr-1.5" />

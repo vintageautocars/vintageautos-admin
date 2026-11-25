@@ -20,9 +20,11 @@ interface BookingActionsProps {
   status: BookingStatus;
   paymentStatus?: PaymentStatus | null;
   ownerPaidAt?: string | null;
+  vehicleOwnerRoles?: string[];
 }
 
-export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt }: BookingActionsProps) {
+export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt, vehicleOwnerRoles = [] }: BookingActionsProps) {
+  const isPartnerVehicle = vehicleOwnerRoles.includes('OWNER');
   const queryClient = useQueryClient();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -69,11 +71,11 @@ export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt }
     );
   }
 
-  if (status === 'COMPLETED' && ownerPaidAt) {
+  if (status === 'COMPLETED' && (!isPartnerVehicle || ownerPaidAt)) {
     return (
       <p className="text-sm text-muted-foreground">
-        This booking is <span className="font-medium text-foreground">completed</span> and the owner
-        payout has been recorded.
+        This booking is <span className="font-medium text-foreground">completed</span>
+        {isPartnerVehicle && ownerPaidAt && ' and the partner payout has been recorded'}.
       </p>
     );
   }
@@ -96,7 +98,7 @@ export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt }
             open={confirmOpen}
             onOpenChange={setConfirmOpen}
             title="Confirm Booking"
-            description="Are you sure you want to confirm this booking? The customer will be notified."
+            description="Are you sure you want to confirm this booking? The client will be notified."
             confirmLabel="Confirm Booking"
             variant="default"
             isLoading={confirmMutation.isPending}
@@ -111,7 +113,7 @@ export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt }
             description={
               paymentStatus === 'AWAITING_VERIFICATION'
                 ? 'A receipt has been submitted but not yet verified. Confirming now will bypass payment verification. Are you sure you want to proceed?'
-                : 'No payment has been received for this booking. Confirming will mark it as confirmed without payment. Only proceed if you have an offline arrangement with the customer.'
+                : 'No payment has been received for this booking. Confirming will mark it as confirmed without payment. Only proceed if you have an offline arrangement with the client.'
             }
             confirmLabel="Confirm anyway"
             variant="destructive"
@@ -197,7 +199,7 @@ export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt }
         open={cancelOpen}
         onOpenChange={setCancelOpen}
         title="Cancel Booking"
-        description="Please provide a reason for cancelling this booking. The customer will be notified."
+        description="Please provide a reason for cancelling this booking. The client will be notified."
         placeholder="e.g. Vehicle unavailable due to maintenance…"
         confirmLabel="Cancel Booking"
         isLoading={cancelMutation.isPending}
@@ -214,8 +216,8 @@ export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt }
         }}
       />
 
-      {/* Owner payout — available once booking is past PENDING and not yet paid */}
-      {(status === 'CONFIRMED' || status === 'ACTIVE' || status === 'COMPLETED') && !ownerPaidAt && (
+      {/* Owner payout — only for partner-owned vehicles, once past PENDING and not yet paid */}
+      {isPartnerVehicle && (status === 'CONFIRMED' || status === 'ACTIVE' || status === 'COMPLETED') && !ownerPaidAt && (
         <>
           <Button
             variant="outline"
@@ -224,7 +226,7 @@ export function BookingActions({ bookingId, status, paymentStatus, ownerPaidAt }
             className="border-amber-500 text-amber-700 hover:bg-amber-50 hover:text-amber-800"
           >
             <Banknote className="size-4" />
-            Record Owner Payout
+            Record Partner Payout
           </Button>
           <PayoutSheet
             open={payoutOpen}
