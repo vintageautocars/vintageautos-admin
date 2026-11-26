@@ -126,6 +126,12 @@ function Field({ label, error, hint, children }: {
   );
 }
 
+// ─── Naira formatting helper ──────────────────────────────────────────────────
+
+function formatNaira(val: string): string {
+  return val.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 // ─── Step 1: Details ─────────────────────────────────────────────────────────
 
 function Step1Details({ vehicle, onComplete }: {
@@ -135,8 +141,11 @@ function Step1Details({ vehicle, onComplete }: {
   const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
   const categories = categoriesData ?? [];
   const { mutateAsync: updateVehicle } = useAdminUpdateVehicle();
+  const [dailyRateDisplay, setDailyRateDisplay] = useState(
+    vehicle.dailyRate ? formatNaira(String(vehicle.dailyRate)) : ''
+  );
 
-  const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const { register, control, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       name:         vehicle.name,
@@ -207,8 +216,23 @@ function Step1Details({ vehicle, onComplete }: {
       </div>
 
       <Field label="Daily rate (₦)" error={errors.dailyRate?.message} hint="Rental price per day in Nigerian Naira.">
-        <Input type="number" step="0.01" min="0" placeholder="e.g. 75000"
-          {...register('dailyRate', { valueAsNumber: true })} />
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium shrink-0">₦</span>
+          <Input
+            type="text"
+            inputMode="numeric"
+            placeholder="e.g. 75,000"
+            value={dailyRateDisplay}
+            {...register('dailyRate', {
+              setValueAs: (v: string) => Number(String(v).replace(/,/g, '')),
+            })}
+            onChange={(e) => {
+              const formatted = formatNaira(e.target.value);
+              setDailyRateDisplay(formatted);
+              setValue('dailyRate', Number(formatted.replace(/,/g, '')), { shouldValidate: true });
+            }}
+          />
+        </div>
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -194,11 +194,18 @@ function SearchableSelect({
   );
 }
 
+// ─── Naira formatting helper ──────────────────────────────────────────────────
+
+function formatNaira(val: string): string {
+  return val.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 // ─── Step 1: Vehicle details ──────────────────────────────────────────────────
 
 function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
   const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
   const categories = categoriesData ?? [];
+  const [dailyRateDisplay, setDailyRateDisplay] = useState('');
 
   // Cascading make → model → year
   const { data: makesData, isLoading: makesLoading }  = useMakes();
@@ -326,8 +333,23 @@ function Step1Details({ onComplete }: { onComplete: (v: Vehicle) => void }) {
 
       <Field label="Daily rate (₦)" error={errors.dailyRate?.message}
         hint="Rental price per day in Nigerian Naira.">
-        <Input type="number" step="0.01" min="0" placeholder="e.g. 75000"
-          {...register('dailyRate', { valueAsNumber: true })} />
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium shrink-0">₦</span>
+          <Input
+            type="text"
+            inputMode="numeric"
+            placeholder="e.g. 75,000"
+            value={dailyRateDisplay}
+            {...register('dailyRate', {
+              setValueAs: (v: string) => Number(String(v).replace(/,/g, '')),
+            })}
+            onChange={(e) => {
+              const formatted = formatNaira(e.target.value);
+              setDailyRateDisplay(formatted);
+              setValue('dailyRate', Number(formatted.replace(/,/g, '')), { shouldValidate: true });
+            }}
+          />
+        </div>
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

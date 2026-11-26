@@ -35,6 +35,14 @@ function StatusChip({ status }: { status: Negotiation['status'] }) {
   );
 }
 
+// ─── Naira formatting helper ──────────────────────────────────────────────────
+
+function formatNaira(val: string): string {
+  return val.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// ─── Agree Terms Modal ────────────────────────────────────────────────────────
+
 function AgreeTermsModal({
   open,
   onOpenChange,
@@ -53,8 +61,8 @@ function AgreeTermsModal({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const ap = parseFloat(agreedPrice);
-    const rp = parseFloat(rentalPrice);
+    const ap = parseFloat(agreedPrice.replace(/,/g, ''));
+    const rp = parseFloat(rentalPrice.replace(/,/g, ''));
     if (!ap || !rp || ap <= 0 || rp <= 0) return;
     onConfirm({ agreedPrice: ap, rentalPrice: rp });
   }
@@ -81,29 +89,33 @@ function AgreeTermsModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="agreed-price">Partner Payout / Slot (₦)</Label>
-              <Input
-                id="agreed-price"
-                type="number"
-                min="1"
-                step="0.01"
-                placeholder="e.g. 45000"
-                value={agreedPrice}
-                onChange={e => setAgreedPrice(e.target.value)}
-                required
-              />
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium shrink-0">₦</span>
+                <Input
+                  id="agreed-price"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="e.g. 45,000"
+                  value={agreedPrice}
+                  onChange={e => setAgreedPrice(formatNaira(e.target.value))}
+                  required
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="rental-price">Rental Price / Slot (₦)</Label>
-              <Input
-                id="rental-price"
-                type="number"
-                min="1"
-                step="0.01"
-                placeholder="e.g. 60000"
-                value={rentalPrice}
-                onChange={e => setRentalPrice(e.target.value)}
-                required
-              />
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium shrink-0">₦</span>
+                <Input
+                  id="rental-price"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="e.g. 60,000"
+                  value={rentalPrice}
+                  onChange={e => setRentalPrice(formatNaira(e.target.value))}
+                  required
+                />
+              </div>
             </div>
           </div>
           <DialogFooter>
