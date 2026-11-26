@@ -15,6 +15,8 @@ export const AUDIT_ACTIONS = {
   VEHICLE_REJECTED:               'VEHICLE_REJECTED',
   VEHICLE_AVAILABILITY_TOGGLED:   'VEHICLE_AVAILABILITY_TOGGLED',
   VEHICLE_FEATURED_TOGGLED:       'VEHICLE_FEATURED_TOGGLED',
+  VEHICLE_EDITED:                 'VEHICLE_EDITED',
+  VEHICLE_DELETED:                'VEHICLE_DELETED',
 
   // Bookings
   BOOKING_CONFIRMED:              'BOOKING_CONFIRMED',
@@ -121,6 +123,8 @@ const ACTION_LABELS: Record<string, string> = {
   [AUDIT_ACTIONS.VEHICLE_REJECTED]:               'Vehicle rejected',
   [AUDIT_ACTIONS.VEHICLE_AVAILABILITY_TOGGLED]:   'Vehicle availability toggled',
   [AUDIT_ACTIONS.VEHICLE_FEATURED_TOGGLED]:       'Vehicle featured toggled',
+  [AUDIT_ACTIONS.VEHICLE_EDITED]:                 'Vehicle edited',
+  [AUDIT_ACTIONS.VEHICLE_DELETED]:                'Vehicle deleted',
   [AUDIT_ACTIONS.BOOKING_CONFIRMED]:              'Booking confirmed',
   [AUDIT_ACTIONS.BOOKING_MARKED_ACTIVE]:          'Booking marked active',
   [AUDIT_ACTIONS.BOOKING_COMPLETED]:              'Booking completed',

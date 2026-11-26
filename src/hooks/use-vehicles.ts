@@ -126,6 +126,18 @@ export function useFetchDocumentUrl() {
   });
 }
 
+export function useAdminDeleteVehicle() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/vehicles/admin/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: vehicleKeys.all });
+      toast.success('Vehicle deleted.');
+    },
+    onError: () => toast.error('Failed to delete vehicle.'),
+  });
+}
+
 export function useAdminDeletePhoto() {
   const qc = useQueryClient();
   return useMutation({

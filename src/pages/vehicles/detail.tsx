@@ -1,5 +1,6 @@
-import { useParams, Link } from 'react-router';
-import { ArrowLeft, Pencil } from 'lucide-react';
+import { useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router';
+import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import { StatusBadge } from '@/components/shared/status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,8 @@ import { PhotoGallery } from '@/components/vehicles/photo-gallery';
 import { DocumentViewer } from '@/components/vehicles/document-viewer';
 import { VehicleActions } from '@/components/vehicles/vehicle-actions';
 import { NegotiationPanel } from '@/components/vehicles/negotiation-panel';
-import { useVehicle } from '@/hooks/use-vehicles';
+import { ConfirmModal } from '@/components/shared/confirm-modal';
+import { useVehicle, useAdminDeleteVehicle } from '@/hooks/use-vehicles';
 
 function LoadingSkeleton() {
   return (
@@ -25,7 +27,10 @@ function LoadingSkeleton() {
 
 export default function VehicleDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { data: vehicle, isLoading, isError, refetch } = useVehicle(id ?? '');
+  const deleteMutation = useAdminDeleteVehicle();
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,6 +70,15 @@ export default function VehicleDetailPage() {
                   <Pencil className="size-3.5 mr-1.5" />
                   Edit
                 </Link>
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => setDeleteOpen(true)}
+                disabled={deleteMutation.isPending}
+              >
+                <Trash2 className="size-3.5 mr-1.5" />
+                Delete
               </Button>
             </div>
           </div>
@@ -138,6 +152,21 @@ export default function VehicleDetailPage() {
               </Card>
             </TabsContent>
           </Tabs>
+
+          <ConfirmModal
+            open={deleteOpen}
+            onOpenChange={setDeleteOpen}
+            title="Delete Vehicle"
+            description={`Permanently delete "${vehicle.name}"? All photos and documents stored in Cloudinary will also be removed. This cannot be undone.`}
+            confirmLabel="Delete"
+            variant="destructive"
+            isLoading={deleteMutation.isPending}
+            onConfirm={() => {
+              deleteMutation.mutate(vehicle.id, {
+                onSuccess: () => navigate('/vehicles'),
+              });
+            }}
+          />
         </>
       )}
     </div>
